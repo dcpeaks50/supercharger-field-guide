@@ -222,10 +222,9 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
   <div id="view-install" hidden>
     <div class="hero" style="padding-bottom:20px"><h1>Watch an install</h1><p>Hit play, or drag the timeline. Each stage shows what's happening, and exactly what goes in the ground and in the conduit.</p></div>
     <div class="opts">
-      <span>Property<span class="seg" id="opt-prop"><button data-v="restaurant" aria-pressed="true">Restaurant</button><button data-v="gas">Gas station</button></span></span>
-      <span>Posts<span class="seg" id="opt-posts"><button data-v="2">2</button><button data-v="4" aria-pressed="true">4</button><button data-v="6">6</button><button data-v="8">8</button></span></span>
+      <span>Posts<span class="seg" id="opt-posts"><button data-v="4" aria-pressed="true">4</button><button data-v="6">6</button><button data-v="8">8</button></span></span>
     </div>
-    <p class="assume">Assumptions: one V4 cabinet (1500 A, 480 V 3-phase), behind-the-curb posts, right-justified, ≈100 ft from cabinet to the farthest post, asphalt lot, no surprises underground. Sizing follows the Tesla recommendations in this guide; your engineer of record has the final say.</p>
+    <p class="assume">Assumptions: a restaurant parking lot, one V4 cabinet (1500 A, 480 V 3-phase), 4–8 posts behind the curb, right-justified, ≈100 ft from cabinet to the farthest post, asphalt lot, no surprises underground. Sizing follows the Tesla recommendations in this guide; your engineer of record has the final say.</p>
     <div class="sim">
       <div>
         <svg class="stage-svg" id="site" viewBox="230 170 770 405" role="img" aria-label="Animated site plan of a V4 Supercharger install"></svg>
@@ -1100,7 +1099,7 @@ $("#sim-range").oninput = (e) => { setPlaying(false); SIM.t = +e.target.value / 
 $("#sim-stages").innerHTML = STAGES.map((x, i) => `<button type="button" data-i="${i}">${i + 1}. ${x.name}</button>`).join("");
 $("#sim-stages").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; setPlaying(false); SIM.t = (+b.dataset.i + 0.55) / N; renderSim(); };
 const seg = (id, key, cast) => $(id).onclick = (e) => { const b = e.target.closest("button"); if (!b) return; SIM[key] = cast(b.dataset.v); $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); renderSim(); };
-seg("#opt-posts", "posts", Number); seg("#opt-prop", "prop", String);
+seg("#opt-posts", "posts", Number);
 renderSim();
 
 // start
