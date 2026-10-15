@@ -1,0 +1,8 @@
+name = "supercharger-ask"
+main = "index.js"
+compatibility_date = "2026-09-01"
+
+# Daily question counters (created with: npx wrangler kv namespace create LIMITS)
+# [[kv_namespaces]]
+# binding = "LIMITS"
+# id = "<filled in after creation>"

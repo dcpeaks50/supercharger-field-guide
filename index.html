@@ -80,6 +80,45 @@ select{font:inherit;font-size:14px;padding:8px 12px;border-radius:6px;border:1px
 .score .big{font-size:56px;font-weight:500}
 .missed{margin-top:20px}
 .missed li{margin:10px 0}
+.ask-box{display:flex;gap:10px;margin-top:6px}
+.ask-box textarea{flex:1;font:inherit;font-size:15px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);resize:vertical;min-height:52px}
+.ask-box textarea:focus{outline:2px solid var(--blue);outline-offset:-1px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 4px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.thread{margin-top:24px;display:flex;flex-direction:column;gap:14px}
+.msg{padding:14px 16px;border-radius:12px;font-size:15px;line-height:1.6}
+.msg.q{background:var(--soft);align-self:flex-end;max-width:85%}
+.msg.a{border:1px solid var(--line);background:var(--card)}
+.msg.a p{margin:0 0 8px}.msg.a p:last-child{margin:0}
+.msg.a ul{margin:4px 0 8px;padding-left:20px}
+.msg.err{border-color:var(--red)}
+.typing{color:var(--muted);font-size:14px}
+.sim{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:24px;align-items:start}
+.stage-svg{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line);background:#e9ecef}
+.sim-controls{display:flex;align-items:center;gap:12px;margin-top:12px}
+.play{width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font-size:16px;cursor:pointer;flex:none}
+#sim-range{flex:1;accent-color:var(--blue)}
+.sim-time{font-size:12px;color:var(--muted);min-width:64px;text-align:right}
+.stagelist{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.stagelist button{border:1px solid var(--line);background:var(--card);color:var(--muted);font:inherit;font-size:12px;padding:4px 10px;border-radius:999px;cursor:pointer}
+.stagelist button.done{color:var(--ink)}
+.stagelist button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--card)}
+.panel .step{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.panel h2{font-size:22px;font-weight:500;margin:4px 0 8px}
+.panel p{margin:0 0 10px}
+.panel ul{padding-left:20px;margin:6px 0 10px}
+.mat{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.mat h3{font-size:13px;font-weight:600;margin:0 0 6px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.mat table td:first-child{width:38%}
+.opts{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;margin:0 0 18px;font-size:14px}
+.seg{display:inline-flex;background:var(--soft);border-radius:8px;padding:3px;margin-left:6px}
+.seg button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;padding:5px 12px;border-radius:6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.assume{font-size:12px;color:var(--muted);text-align:center;max-width:820px;margin:0 auto 18px}
+.xsec{margin-top:10px}
+@media (max-width:900px){.sim{grid-template-columns:1fr}}
 [hidden]{display:none!important}
 footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 @media (max-width:860px){.layout{grid-template-columns:1fr}.toc{display:none}.flash{height:380px}}
@@ -94,6 +133,8 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
       <button data-view="learn" aria-current="true">Learn</button>
       <button data-view="cards">Flashcards</button>
       <button data-view="quiz">Quiz</button>
+      <button data-view="install">Install</button>
+      <button data-view="ask">Ask</button>
     </nav>
     <div class="levels" role="group" aria-label="Difficulty">
       <button data-level="1" aria-pressed="true">Basics</button>
@@ -110,8 +151,10 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
       <h1>Design and install V4 Superchargers</h1>
       <p>V4 cabinets and V4 posts: stall layouts, bollards, wire runs, trenching, clearances, and what changes for the Semi Megacharger. Study here, then test yourself.</p>
       <div class="cta">
-        <button class="btn primary" data-go="cards">Study flashcards</button>
+        <button class="btn primary" data-go="install">Watch an install</button>
+        <button class="btn ghost" data-go="cards">Study flashcards</button>
         <button class="btn ghost" data-go="quiz">Take a quiz</button>
+        <button class="btn ghost" data-go="ask">Ask a question</button>
       </div>
       <p class="note">Study notes built from Tesla&apos;s V4 Supercharger documents. Always design to the current Tesla documents, the stamped plans, and the AHJ.</p>
     </div>
@@ -175,8 +218,43 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
       </div>
     </div>
   </div>
+  <!-- INSTALL -->
+  <div id="view-install" hidden>
+    <div class="hero" style="padding-bottom:20px"><h1>Watch an install</h1><p>Hit play, or drag the timeline. Each stage shows what's happening, and exactly what goes in the ground and in the conduit.</p></div>
+    <div class="opts">
+      <span>Property<span class="seg" id="opt-prop"><button data-v="restaurant" aria-pressed="true">Restaurant</button><button data-v="gas">Gas station</button></span></span>
+      <span>Posts<span class="seg" id="opt-posts"><button data-v="2">2</button><button data-v="4" aria-pressed="true">4</button><button data-v="6">6</button><button data-v="8">8</button></span></span>
+    </div>
+    <p class="assume">Assumptions: one V4 cabinet (1500 A, 480 V 3-phase), behind-the-curb posts, right-justified, ≈100 ft from cabinet to the farthest post, asphalt lot, no surprises underground. Sizing follows the Tesla recommendations in this guide; your engineer of record has the final say.</p>
+    <div class="sim">
+      <div>
+        <svg class="stage-svg" id="site" viewBox="230 170 770 405" role="img" aria-label="Animated site plan of a V4 Supercharger install"></svg>
+        <div class="sim-controls">
+          <button class="play" id="sim-play" aria-label="Play">▶</button>
+          <input type="range" id="sim-range" min="0" max="1000" value="0" aria-label="Install timeline">
+          <span class="sim-time" id="sim-time"></span>
+        </div>
+        <div class="stagelist" id="sim-stages"></div>
+      </div>
+      <div class="panel" id="sim-panel"></div>
+    </div>
+  </div>
+
+  <!-- ASK -->
+  <div id="view-ask" hidden>
+    <div class="hero"><h1>Ask</h1><p>Ask anything about the material. Claude answers from this guide and the Tesla V4 documents, with page references.</p></div>
+    <div class="center">
+      <form class="ask-box" id="ask-form">
+        <textarea id="ask-q" rows="2" maxlength="600" placeholder="e.g. What is a fishbone layout?" aria-label="Your question"></textarea>
+        <button class="btn primary" id="ask-send" type="submit" style="min-width:110px">Ask</button>
+      </form>
+      <div class="chips" id="ask-chips"></div>
+      <div class="thread" id="ask-thread" aria-live="polite"></div>
+      <p class="note">Answers are AI-generated from the guide's material and can be wrong. Check the source page before designing, and follow the stamped plans and the AHJ. <button class="pill" id="ask-clear" type="button">Clear chat</button></p>
+    </div>
+  </div>
 </main>
-<footer>Sources: V4 Supercharger Cabinet datasheet (v1.0, Nov 2024) · V4 Supercharger Post datasheet · V4 Semi Charger Post datasheet · V4 Semicharger Design Guide (Rev 1, Sep 2025) · Commercial Charging Design Manual (Standard Site Design Guidelines) · Construction Quality Checklist · Site Survey Checklist. Study aid only, not an official Tesla publication.</footer>
+<footer>Sources: V4 Supercharger Cabinet datasheet (v1.0, Nov 2024) · V4 Supercharger Post datasheet · V4 Semi Charger Post datasheet · V4 Semicharger Design Guide (Rev 1, Sep 2025) · Commercial Charging Design Manual (Standard Site Design Guidelines) · Construction Quality Checklist · Site Survey Checklist. Ask answers are generated by Claude. Study aid only, not an official Tesla publication.</footer>
 
 <script>
 /* ---------------------------------------------------------------- content */
@@ -654,7 +732,7 @@ $("#toc").innerHTML = TOPICS.map((t) => `<a href="#t-${t.id}">${t.title}</a>`).j
 
 // views
 function show(view) {
-  for (const v of ["learn", "cards", "quiz"]) $("#view-" + v).hidden = v !== view;
+  for (const v of ["learn", "cards", "quiz", "install", "ask"]) $("#view-" + v).hidden = v !== view;
   document.querySelectorAll("nav button").forEach((b) => b.setAttribute("aria-current", String(b.dataset.view === view)));
   window.scrollTo(0, 0);
   store.set("view", view);
@@ -762,6 +840,268 @@ $("#quiz-go").onclick = () => startQuiz(quizPool());
 $("#quiz-again").onclick = () => { $("#quiz-done").hidden = true; $("#quiz-start").hidden = false; quizIntro(); };
 $("#quiz-retry").onclick = () => startQuiz(wrong.map((w) => w.q));
 $("#quiz-topic").onchange = quizIntro;
+
+// ask (Claude via a small Cloudflare Worker that holds the API key)
+const ASK_URL = "ASK_ENDPOINT_URL";
+const EXAMPLES = ["What is a fishbone layout?", "When do V4 posts need bollards?", "What does Rho mean for trench backfill?", "Why no neutral to the V4 cabinet?", "What's the difference between behind the curb and on the line?"];
+let chat = store.get("chat", []);
+const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function md(t) {
+  // Tiny markdown: **bold**, "- " lists, paragraphs.
+  const lines = esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").split("\n");
+  let out = "", list = false;
+  for (const l of lines) {
+    const m = /^\s*[-•*]\s+(.*)/.exec(l);
+    if (m) { if (!list) { out += "<ul>"; list = true; } out += "<li>" + m[1] + "</li>"; continue; }
+    if (list) { out += "</ul>"; list = false; }
+    if (l.trim()) out += "<p>" + l + "</p>";
+  }
+  return out + (list ? "</ul>" : "");
+}
+function renderChat() {
+  $("#ask-thread").innerHTML = chat.map((m) => m.role === "user" ? `<div class="msg q">${esc(m.content)}</div>` : `<div class="msg a${m.error ? " err" : ""}">${md(m.content)}</div>`).join("");
+}
+$("#ask-chips").innerHTML = EXAMPLES.map((e) => `<button class="chip" type="button">${e}</button>`).join("");
+$("#ask-chips").onclick = (e) => { if (e.target.classList.contains("chip")) { $("#ask-q").value = e.target.textContent; ask(); } };
+$("#ask-form").onsubmit = (e) => { e.preventDefault(); ask(); };
+$("#ask-q").onkeydown = (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(); } };
+$("#ask-clear").onclick = () => { chat = []; store.set("chat", chat); renderChat(); };
+async function ask() {
+  const q = $("#ask-q").value.trim();
+  if (!q || $("#ask-send").disabled) return;
+  const history = chat.filter((m) => !m.error).slice(-6).map(({ role, content }) => ({ role, content }));
+  chat.push({ role: "user", content: q }); renderChat();
+  $("#ask-q").value = ""; $("#ask-send").disabled = true;
+  const typing = document.createElement("div"); typing.className = "typing"; typing.textContent = "Claude is thinking…"; $("#ask-thread").appendChild(typing);
+  try {
+    if (ASK_URL.startsWith("ASK_")) throw new Error("The Ask feature isn't connected yet.");
+    const r = await fetch(ASK_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question: q, history }) });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || !data.answer) throw new Error(data.error || "Something went wrong. Try again.");
+    chat.push({ role: "assistant", content: data.answer });
+  } catch (err) {
+    chat.push({ role: "assistant", content: err.message || "Couldn't reach Claude. Check your connection.", error: true });
+  }
+  chat = chat.slice(-20); store.set("chat", chat.filter((m) => !m.error));
+  $("#ask-send").disabled = false; renderChat();
+  typing.remove();
+  $("#ask-thread").lastElementChild?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+renderChat();
+
+// ---------------------------------------------------------------- install walkthrough
+const SIM = { posts: 4, prop: "restaurant", t: 0, playing: false };
+const PX_FT = 4; // drawing scale: 4 px per foot
+const CAB = { x: 852, y: 470 }; // cabinet center
+const SB = { x: 920, y: 478 };  // switchboard center
+const XF = { x: 925, y: 405 };  // utility transformer
+const STRIP_Y = 478;            // landscape strip behind the curb (posts live here)
+const postX = (i, n) => 722 - (n - 1 - i) * 36; // 9 ft spacing, farthest post ~100 ft from the cabinet
+const runFt = (i, n) => Math.round((CAB.x - postX(i, n)) / PX_FT + 12); // trench run + turn-ups
+const STAGES = [
+  { id: "survey", name: "Site survey", body: `<p>Walk the property with the site survey checklist. Confirm the address, how many stalls, and where the cabinet and posts could go.</p><ul><li>Measure <b>transformer → cabinet</b> and <b>cabinet → farthest post</b> (≈100 ft here, well under the 330 ft max).</li><li>Photograph the stall area, the transformer, and the whole trench path. Note the surface: asphalt, concrete, or landscaping.</li><li>Check 24/7 access, lighting, restrooms without a purchase, food within a 2-minute walk.</li></ul>` },
+  { id: "design", name: "Design & approval", body: `<p>The design firm draws stalls, equipment, single-line diagram, and trench details. <b>Tesla Charging Deployment approves the drawings before permitting.</b></p><ul><li>Stalls 9 × 17 ft min, 20 ft drive aisle. Posts behind the curb, right-justified, cable terminus centered on the stall.</li><li>Equipment grouped near the middle of the run, close to the transformer.</li><li>Cabinet front needs <b>60 in</b> clear; posts need 18 in on the service side.</li></ul>` },
+  { id: "utility", name: "Utility & switchboard", body: `<p>The utility sets (or upgrades) the transformer. The contractor sets a pad for the main switchboard next to it.</p><ul><li>The secondary from the transformer to the switchboard is sized by the utility and the engineer.</li><li>The switchboard holds the main breaker and the feeder breaker for the V4 cabinet, plus small breakers for lights.</li><li>Install the <b>grounding electrode</b> and the main bonding jumper.</li></ul>` },
+  { id: "locate", name: "Locate & saw-cut", body: `<p>Call 811 so existing utilities get marked. Lay out the trench and equipment pads, then saw-cut the asphalt along the trench path.</p><ul><li>Route through landscaping instead of pavement when you can. It's cheaper to dig and restore.</li><li>Get the <b>conduit window templates</b> for the cabinet and posts now. You'll need them when you set conduit.</li></ul>` },
+  { id: "trench", name: "Trench", body: `<p>Dig two trenches: a short <b>AC feeder trench</b> (switchboard → cabinet) and the <b>DC post trench</b> (cabinet → each post).</p><ul><li>AC feeder: min 24 in deep under vehicle areas, max 28 in.</li><li>DC post conduits: <b>max 24 in to the top</b> of the upper conduit (it's a heat limit, deeper runs hotter).</li><li>Conduit can go deeper for up to 10 ft (or 10%) to cross a utility or make a turn-up.</li></ul>`, xsec: true },
+  { id: "conduit", name: "Conduit", body: `<p>Lay the conduit and stub it up exactly where the templates say. Each post gets its own conduit straight from the cabinet.</p><ul><li>Stagger conduits to fit the cabinet's conduit windows (AC, DC, comms each have one).</li><li>Stub-ups at the posts: <b>2–4 in</b> above the finished concrete.</li><li>AC conduits can't be stacked more than 2 high.</li></ul>`, xsec: true, mat: "conduit" },
+  { id: "backfill", name: "Backfill & tape", body: `<p>Backfill, compact, and patch the asphalt. Backfill choice is a heat decision.</p><ul><li>Detectable <b>red warning tape 8 in below the surface</b>.</li><li>Min 2 in of approved backfill on all sides of the conduits.</li></ul>`, xsec: true, mat: "backfill" },
+  { id: "pads", name: "Pads & bases", body: `<p>Form and pour the cabinet pad, then the post bases (or bolt posts straight to the curb/strip concrete).</p><ul><li>Cabinet reference pad: 10 in slab, #5 bars @ 16 in each way, 6 in compacted base. Slope 0.5–2% for drainage.</li><li>Anchors at least 6 in from the conduit window and pad edge.</li><li>Epoxy anchors: wait <b>7 days</b> after the pour before drilling.</li></ul>` },
+  { id: "set", name: "Set equipment", body: `<p>Set the cabinet (2,420 lb, forklift or lifting rings) over its conduit windows, then the posts (200 lb each).</p><ul><li>Anchor everything per the details.</li><li>Posts on a slope: leveling nuts handle up to 4%, more needs a level base.</li><li>Keep the cabinet front 60 in clear and out of traffic.</li></ul>` },
+  { id: "pull", name: "Pull wire", body: `<p>Pull the conductors. This is where the conduit sizing pays off.</p><ul><li>Use <b>1000 V rated</b> conductors for all DC. The DC post conductors are Tesla-certified equipment wiring.</li><li>The Tesla signal cable bundle (with the 24 V post supply) rides in each post conduit.</li></ul>`, mat: "wire" },
+  { id: "terminate", name: "Terminate & torque", body: `<p>Land everything, torque it, and mark it.</p><ul><li><b>Anti-oxidation compound on every aluminum termination.</b></li><li>Torque to spec and add <b>torque marks</b>. Mechanical lugs for power, push-and-clip for the signal bundle (correct color order and post mapping).</li><li><b>Duct seal</b> every conduit at the cabinet and posts. Label posts and breakers.</li></ul>` },
+  { id: "striping", name: "Stalls & protection", body: `<p>Stripe the stalls and install post labels. Posts are numbered left to right: 1A, 1B, 1C…</p><ul><li>Behind-the-curb posts usually <b>don't need bollards</b>: Superchargers de-energize when not in use.</li><li>On-the-line or single-row fishbone posts would need bollards.</li></ul>` },
+  { id: "commission", name: "Commissioning", body: `<p>Run the construction quality checklist and photograph everything before power-up.</p><ul><li>Resistance checks for shorts. Cycle breakers with the post DC disconnects off.</li><li>Photos: breaker terminations and settings, nameplates, arc flash labels, inside the cabinet, and inside <b>every</b> post.</li><li>Leave the main breaker closed and the controller powered.</li></ul>` },
+  { id: "live", name: "Charging!", body: `<p>Cars plug in and the cabinet shares power across the posts, up to 500 kW to a single car.</p><ul><li>Each post: 615 A continuous, 0–1000 V DC, 3 m cable.</li><li>Clean site photos with all equipment in frame, and you're done.</li></ul>` },
+];
+const N = STAGES.length;
+const stageAt = (t) => Math.min(N - 1, Math.floor(t * N));
+const within = (t, i) => Math.max(0, Math.min(1, t * N - i)); // 0..1 progress inside stage i
+const after = (t, i) => t * N >= i;
+
+function materials(kind) {
+  const n = SIM.posts, runs = Array.from({ length: n }, (_, i) => runFt(i, n));
+  const dcFt = runs.reduce((a, b) => a + b + 10, 0); // + slack at each end
+  const acFt = 25; // switchboard to cabinet, with turn-ups
+  const label = (i) => "1" + "ABCDEFGH"[i];
+  if (kind === "conduit") return `<div class="mat"><h3>Conduit</h3><table>
+<tr><td>AC feeder</td><td><b>(6) 4 in</b> conduits, switchboard → cabinet (~${acFt} ft each)</td></tr>
+<tr><td>DC posts</td><td><b>(${n}) 4 in</b> conduits, one per post: ${runs.map((r, i) => label(i) + " ≈" + r + " ft").join(", ")}</td></tr>
+<tr><td>Comms (optional)</td><td>1–1.25 in spare for CAT6 if LTE is poor or for a payment kiosk</td></tr>
+<tr><td>Total conduit</td><td>≈ ${6 * acFt + runs.reduce((a, b) => a + b, 0)} ft of 4 in</td></tr></table></div>`;
+  if (kind === "backfill") return `<div class="mat"><h3>Backfill for ${n} post conduits</h3><table>
+<tr><td>DC trench</td><td>${n <= 4 ? "<b>4 or fewer conduits: native backfill is OK</b> (no engineered fill needed)." : "<b>More than 4 conduits: engineered thermal fill</b> with Rho &lt; 100 °C·m/W (up to 16 conduits can sit with no spacing)."}</td></tr>
+<tr><td>AC trench (1 cabinet)</td><td>Rho 120 allowed (native soil/sand), 24–28 in deep</td></tr>
+<tr><td>Warning tape</td><td>Detectable red, 8 in below the surface</td></tr></table></div>`;
+  if (kind === "wire") return `<div class="mat"><h3>What goes in each conduit</h3><table>
+<tr><td>Each AC conduit (×6)</td><td>(3) 750 kcmil Al (one per phase) + (1) 350 kcmil Al EGC · <b>no neutral</b></td></tr>
+<tr><td>Each DC post conduit (×${n})</td><td>(4) 600 MCM Al (2 POS, 2 NEG) + (1) 2/0 Cu EGC + Tesla signal cable bundle<br><span class="src">Copper option: (4) 350 MCM Cu</span></td></tr>
+<tr><td>AC wire totals</td><td>≈ ${18 * acFt} ft of 750 kcmil Al + ${6 * acFt} ft of 350 kcmil Al</td></tr>
+<tr><td>DC wire totals</td><td>≈ ${4 * dcFt} ft of 600 MCM Al + ${dcFt} ft of 2/0 Cu + ${dcFt} ft of signal bundle</td></tr>
+<tr><td>Voltage drop check</td><td>Max 10 V DC cabinet → post. Max run 100 m (330 ft).</td></tr></table></div>`;
+  return "";
+}
+
+function xsection(stageId) {
+  // Trench cross-section inset: DC trench with n conduits, tape at 8 in, max 24 in to top.
+  const n = SIM.posts, perRow = Math.min(n, 4), rows = Math.ceil(n / 4), filled = stageId !== "trench";
+  const w = 300, scale = 6; // 6 px per inch
+  let c = "";
+  for (let i = 0; i < n; i++) { const r = Math.floor(i / 4), k = i % 4; c += `<circle cx="${150 - (perRow - 1) * 15 + k * 30}" cy="${150 - r * 30}" r="13" fill="#f2f2f2" stroke="#7a7a7a" stroke-width="2"/>`; }
+  return `<svg class="xsec" viewBox="0 0 ${w} 200" width="100%" role="img" aria-label="Trench cross-section">
+<rect x="0" y="0" width="${w}" height="200" fill="#f6f3ee" rx="10"/>
+<rect x="0" y="0" width="${w}" height="14" fill="#3a3a3a"/>
+<text x="8" y="11" font-size="9" fill="#fff">ASPHALT</text>
+<rect x="${150 - perRow * 15 - 22}" y="14" width="${perRow * 30 + 44}" height="160" fill="${filled ? (n > 4 ? "#c9b8a6" : "#b49b7f") : "#fff"}" stroke="#8a6d4b" stroke-dasharray="${filled ? "0" : "4 3"}"/>
+${stageId === "trench" ? "" : c}
+${filled && stageId !== "conduit" ? `<line x1="${150 - perRow * 15 - 18}" x2="${150 + perRow * 15 + 18}" y1="${14 + 8 * scale}" y2="${14 + 8 * scale}" stroke="#e5484d" stroke-width="3"/><text x="150" y="${10 + 8 * scale}" text-anchor="middle" font-size="10" fill="#e5484d">warning tape · 8 in</text>` : ""}
+<line x1="58" x2="58" y1="14" y2="${150 - (rows - 1) * 30 - 13}" stroke="#3e6ae1" stroke-width="2"/><text x="54" y="${70 - rows * 8}" text-anchor="end" font-size="10" fill="#3e6ae1">≤ 24 in</text><text x="54" y="${82 - rows * 8}" text-anchor="end" font-size="10" fill="#3e6ae1">to top</text>
+<text x="8" y="192" font-size="10" fill="#555">DC trench · ${n} × 4 in · ${n > 4 ? "engineered fill (Rho &lt; 100)" : "native backfill OK"}</text>
+</svg>`;
+}
+
+function drawSite(t) {
+  const n = SIM.posts, gas = SIM.prop === "gas", st = stageAt(t);
+  const P = (i) => within(t, i);
+  let g = "";
+  // street + lot
+  g += `<rect x="0" y="560" width="1000" height="60" fill="#4a4d52"/><line x1="0" x2="1000" y1="590" y2="590" stroke="#e8d36a" stroke-dasharray="24 18" stroke-width="3"/>`;
+  g += `<rect x="0" y="0" width="1000" height="560" fill="#5b5f66"/>`;
+  // building(s)
+  if (gas) {
+    g += `<rect x="70" y="185" width="300" height="95" rx="6" fill="#d9d4cb"/><text x="300" y="238" text-anchor="middle" font-size="18" fill="#555" font-weight="600">C-STORE</text>`;
+    g += `<rect x="470" y="190" width="330" height="88" rx="8" fill="#9aa3ad" opacity=".55"/><text x="635" y="186" text-anchor="middle" font-size="13" fill="#eee">FUEL CANOPY</text>`;
+    for (let i = 0; i < 4; i++) g += `<rect x="${505 + i * 80}" y="215" width="26" height="34" rx="3" fill="#e5484d"/>`;
+    g += `<rect x="490" y="200" width="290" height="68" fill="none" stroke="#ffcc33" stroke-width="2" stroke-dasharray="6 5" opacity="${after(t, 1) ? 1 : 0}"/>`;
+    if (after(t, 1)) g += `<text x="635" y="300" text-anchor="middle" font-size="12" fill="#ffcc33">20 ft min between fuel dispensing and electrical equipment</text>`;
+  } else {
+    g += `<rect x="250" y="185" width="420" height="95" rx="8" fill="#d9d4cb"/><text x="460" y="240" text-anchor="middle" font-size="20" fill="#555" font-weight="600">RESTAURANT</text>`;
+    g += `<rect x="690" y="190" width="120" height="80" rx="6" fill="#cfc8bc"/><text x="750" y="235" text-anchor="middle" font-size="12" fill="#666">patio</text>`;
+  }
+  // drive aisle arrows + stall row (stalls face the curb)
+  g += `<text x="500" y="345" text-anchor="middle" font-size="12" fill="#cfd3d8">DRIVE AISLE · 20 ft min</text>`;
+  const stallTop = 392, curbY = 460;
+  for (let i = 0; i <= 13; i++) g += `<line x1="${300 + i * 36}" x2="${300 + i * 36}" y1="${stallTop}" y2="${curbY}" stroke="#f4f4f4" stroke-width="2" opacity="${i >= 0 ? 1 : 0}"/>`;
+  // curb + landscape strip + equipment yard
+  g += `<rect x="0" y="${curbY}" width="1000" height="6" fill="#bfc3c7"/><rect x="0" y="466" width="820" height="40" fill="#5f8f4e"/><rect x="820" y="370" width="180" height="190" fill="#6f7277"/>`;
+  g += `<rect x="0" y="506" width="1000" height="54" fill="#5b5f66"/>`;
+  // stage 0: survey pins
+  if (after(t, 0) && st <= 2) { g += `<g opacity="${Math.min(1, P(0) * 3)}"><circle cx="${CAB.x}" cy="${CAB.y}" r="9" fill="#3e6ae1"/><circle cx="${postX(0, n)}" cy="${STRIP_Y}" r="9" fill="#3e6ae1"/><line x1="${postX(0, n)}" x2="${CAB.x}" y1="${STRIP_Y - 22}" y2="${STRIP_Y - 22}" stroke="#fff" stroke-dasharray="4 4"/><text x="${(postX(0, n) + CAB.x) / 2}" y="${STRIP_Y - 28}" text-anchor="middle" font-size="12" fill="#fff">≈100 ft to farthest post</text></g>`; }
+  // stage 1: design layout (dashed equipment + stall highlights)
+  if (after(t, 1)) {
+    const o = st === 1 ? Math.min(1, P(1) * 2) : 0.35;
+    for (let i = 0; i < n; i++) g += `<rect x="${postX(i, n) - 18 - 18}" y="${stallTop}" width="36" height="68" fill="#3e6ae1" opacity="${o * 0.35}"/>`;
+    g += `<rect x="${CAB.x - 22}" y="${CAB.y + 20}" width="44" height="34" fill="none" stroke="#ffcc33" stroke-dasharray="4 3" opacity="${o}"/>`;
+    if (st === 1) g += `<text x="${CAB.x}" y="${CAB.y + 66}" text-anchor="middle" font-size="10" fill="#ffcc33">60 in clear in front</text>`;
+  }
+  // stage 2: transformer + switchboard
+  if (after(t, 2)) {
+    const o = st === 2 ? Math.min(1, P(2) * 2) : 1;
+    g += `<g opacity="${o}"><rect x="${XF.x - 26}" y="${XF.y - 22}" width="52" height="44" rx="4" fill="#3f6b3f" stroke="#2c4a2c"/><text x="${XF.x}" y="${XF.y + 4}" text-anchor="middle" font-size="10" fill="#fff">XFMR</text>
+<rect x="${SB.x - 30}" y="${SB.y - 14}" width="60" height="28" rx="3" fill="#8d939a" stroke="#555"/><text x="${SB.x}" y="${SB.y + 4}" text-anchor="middle" font-size="10" fill="#fff">SWBD</text>
+<line x1="${XF.x}" x2="${SB.x}" y1="${XF.y + 22}" y2="${SB.y - 14}" stroke="#ffcc33" stroke-width="3"/></g>`;
+  }
+  // trench paths
+  const dcPath = `M${CAB.x - 20} ${CAB.y + 4} L${postX(0, n)} ${STRIP_Y + 18}`;
+  const trenchLen = CAB.x - 20 - postX(0, n);
+  // stage 3: saw-cut / locate marks
+  if (after(t, 3)) {
+    const o = st === 3 ? 1 : 0;
+    g += `<line x1="${CAB.x - 20}" x2="${postX(0, n)}" y1="${STRIP_Y + 18}" y2="${STRIP_Y + 18}" stroke="#ff7a1a" stroke-width="2" stroke-dasharray="10 6" opacity="${o}"/>`;
+    if (st === 3) g += `<text x="600" y="545" text-anchor="middle" font-size="12" fill="#ff7a1a">811 locate marks + saw-cut line</text>`;
+  }
+  // stage 4: trench opening (progressive), with an excavator
+  if (after(t, 4)) {
+    const k = st === 4 ? P(4) : 1;
+    const x2 = CAB.x - 20 - trenchLen * k;
+    const fill = after(t, 6) ? "#7d6a55" : "#3b2a1c";
+    g += `<rect x="${Math.min(x2, CAB.x - 20)}" y="${STRIP_Y + 12}" width="${Math.max(0, CAB.x - 20 - x2)}" height="12" fill="${fill}"/>`;
+    g += `<rect x="${SB.x - 40}" y="${SB.y - 4}" width="${(SB.x - 40) - (CAB.x + 22) > 0 ? 0 : 0}" height="0"/>`;
+    g += `<rect x="${CAB.x + 18}" y="${CAB.y - 2}" width="${(SB.x - 30) - (CAB.x + 18)}" height="10" fill="${fill}"/>`;
+    for (let i = 0; i < n; i++) if (postX(i, n) >= x2) g += `<rect x="${postX(i, n) - 4}" y="${STRIP_Y}" width="8" height="14" fill="${fill}"/>`;
+    if (st === 4) g += `<g transform="translate(${x2 - 10} ${STRIP_Y + 4})"><rect x="0" y="0" width="30" height="20" rx="3" fill="#f2b705"/><rect x="-14" y="6" width="16" height="5" fill="#f2b705"/></g>`;
+  }
+  // stage 5: conduits (blue lines drawn in the trench)
+  if (after(t, 5)) {
+    const k = st === 5 ? P(5) : 1;
+    for (let i = 0; i < n; i++) {
+      const x = postX(i, n), y = STRIP_Y + 13 + (i % 4) * 2.5;
+      const xEnd = CAB.x - 20 - (CAB.x - 20 - x) * k;
+      if (!after(t, 6) || st < 13) g += `<line x1="${CAB.x - 20}" x2="${xEnd}" y1="${y}" y2="${y}" stroke="#7fb0ff" stroke-width="1.6" opacity="${after(t, 6) ? 0.35 : 1}"/>`;
+      if (xEnd <= x) g += `<line x1="${x}" x2="${x}" y1="${y}" y2="${STRIP_Y + 2}" stroke="#7fb0ff" stroke-width="2"/>`;
+    }
+    for (let j = 0; j < 6; j++) g += `<line x1="${CAB.x + 18}" x2="${SB.x - 30}" y1="${CAB.y + j * 1.5}" y2="${CAB.y + j * 1.5}" stroke="#ffb347" stroke-width="1.2" opacity="${after(t, 6) ? 0.35 : 1}"/>`;
+  }
+  // stage 7: pads
+  if (after(t, 7)) {
+    const o = st === 7 ? Math.min(1, P(7) * 2) : 1;
+    g += `<rect x="${CAB.x - 26}" y="${CAB.y - 20}" width="52" height="44" fill="#c9c9c9" opacity="${o}"/>`;
+    for (let i = 0; i < n; i++) g += `<rect x="${postX(i, n) - 12}" y="${STRIP_Y - 6}" width="24" height="12" fill="#c9c9c9" opacity="${o}"/>`;
+  }
+  // stage 8: cabinet + posts set
+  if (after(t, 8)) {
+    const o = st === 8 ? Math.min(1, P(8) * 2) : 1;
+    g += `<g opacity="${o}"><rect x="${CAB.x - 18}" y="${CAB.y - 16}" width="36" height="31" rx="3" fill="#f4f4f4" stroke="#222"/><text x="${CAB.x}" y="${CAB.y + 3}" text-anchor="middle" font-size="9" fill="#222" font-weight="700">V4 CAB</text></g>`;
+    for (let i = 0; i < n; i++) g += `<g opacity="${o}"><rect x="${postX(i, n) - 9}" y="${STRIP_Y - 4}" width="18" height="8" rx="2" fill="#f4f4f4" stroke="#222"/></g>`;
+  }
+  // stage 9: wire pull (animated pulses along the runs)
+  if (after(t, 9) && st >= 9) {
+    const k = st === 9 ? P(9) : 1;
+    for (let i = 0; i < n; i++) { const x = postX(i, n), xEnd = CAB.x - 20 - (CAB.x - 20 - x) * k; g += `<line x1="${CAB.x - 20}" x2="${xEnd}" y1="${STRIP_Y + 18}" y2="${STRIP_Y + 18}" stroke="#ff6b3d" stroke-width="2.2" opacity=".9"/>`; }
+    g += `<line x1="${CAB.x + 18}" x2="${SB.x - 30}" y1="${CAB.y + 3}" y2="${CAB.y + 3}" stroke="#ff6b3d" stroke-width="3"/>`;
+  }
+  // stage 10: terminations check marks
+  if (after(t, 10)) { const marks = st === 10 ? Math.ceil(P(10) * (n + 1)) : n + 1; for (let i = 0; i < Math.min(marks, n); i++) g += `<text x="${postX(i, n)}" y="${STRIP_Y - 10}" text-anchor="middle" font-size="12" fill="#12b76a">✔</text>`; if (marks > n) g += `<text x="${CAB.x}" y="${CAB.y - 22}" text-anchor="middle" font-size="12" fill="#12b76a">✔</text>`; }
+  // stage 11: post labels
+  if (after(t, 11)) for (let i = 0; i < n; i++) g += `<text x="${postX(i, n) - 18}" y="${stallTop + 63}" text-anchor="middle" font-size="11" fill="#fff" font-weight="700" opacity="${st === 11 ? Math.min(1, P(11) * 2) : 1}">1${"ABCDEFGH"[i]}</text>`;
+  // stage 12: commissioning clipboard
+  if (st === 12) g += `<g transform="translate(860 300)"><rect x="0" y="0" width="110" height="60" rx="6" fill="#fff"/><text x="10" y="20" font-size="11" fill="#222">QA checklist</text><text x="10" y="38" font-size="11" fill="#12b76a">✔ torque marks</text><text x="10" y="54" font-size="11" fill="#12b76a">✔ photos</text></g>`;
+  // stage 13: cars arrive and charge
+  if (after(t, 13)) {
+    const k = st === 13 ? P(13) : 1;
+    const colors = ["#e5484d", "#f4f4f4", "#3e6ae1", "#222", "#9aa3ad", "#12b76a", "#f2b705", "#7c5cff"];
+    for (let i = 0; i < n; i++) {
+      const arrive = Math.max(0, Math.min(1, k * 2.2 - i * 0.18));
+      if (arrive <= 0) continue;
+      const cx = postX(i, n) - 18, cy = 320 + arrive * 84;
+      g += `<rect x="${cx - 13}" y="${cy - 24}" width="26" height="50" rx="8" fill="${colors[i]}" stroke="#111"/>`;
+      if (arrive >= 1) g += `<line x1="${postX(i, n) - 8}" x2="${cx}" y1="${STRIP_Y - 2}" y2="${cy + 24}" stroke="#7fe08a" stroke-width="2"/><text x="${cx}" y="${cy - 30}" text-anchor="middle" font-size="11" fill="#7fe08a">⚡</text>`;
+    }
+  }
+  return g;
+}
+
+function renderSim() {
+  const t = SIM.t, st = stageAt(t), S2 = STAGES[st];
+  $("#site").innerHTML = drawSite(t);
+  $("#sim-range").value = Math.round(t * 1000);
+  $("#sim-time").textContent = `${st + 1} / ${N}`;
+  $("#sim-stages").querySelectorAll("button").forEach((b, i) => { b.classList.toggle("on", i === st); b.classList.toggle("done", i < st); });
+  if ($("#sim-panel").dataset.stage !== String(st) || $("#sim-panel").dataset.key !== SIM.posts + SIM.prop) {
+    $("#sim-panel").dataset.stage = st; $("#sim-panel").dataset.key = SIM.posts + SIM.prop;
+    $("#sim-panel").innerHTML = `<div class="step">Stage ${st + 1} of ${N}</div><h2>${S2.name}</h2>${S2.body}${S2.mat ? materials(S2.mat) : ""}${S2.xsec ? xsection(S2.id) : ""}${S2.id === "live" ? materials("wire") : ""}`;
+  }
+}
+let last = 0;
+function tick(ts) {
+  if (!SIM.playing) return;
+  const dt = last ? (ts - last) / 1000 : 0; last = ts;
+  SIM.t = Math.min(1, SIM.t + dt / (N * 6.5)); // ~6.5 s per stage
+  renderSim();
+  if (SIM.t >= 1) { setPlaying(false); return; }
+  requestAnimationFrame(tick);
+}
+function setPlaying(on) {
+  SIM.playing = on; $("#sim-play").textContent = on ? "❚❚" : "▶"; $("#sim-play").setAttribute("aria-label", on ? "Pause" : "Play");
+  if (on) { if (SIM.t >= 1) SIM.t = 0; last = 0; requestAnimationFrame(tick); }
+}
+$("#sim-play").onclick = () => setPlaying(!SIM.playing);
+$("#sim-range").oninput = (e) => { setPlaying(false); SIM.t = +e.target.value / 1000; renderSim(); };
+$("#sim-stages").innerHTML = STAGES.map((x, i) => `<button type="button" data-i="${i}">${i + 1}. ${x.name}</button>`).join("");
+$("#sim-stages").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; setPlaying(false); SIM.t = (+b.dataset.i + 0.55) / N; renderSim(); };
+const seg = (id, key, cast) => $(id).onclick = (e) => { const b = e.target.closest("button"); if (!b) return; SIM[key] = cast(b.dataset.v); $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); renderSim(); };
+seg("#opt-posts", "posts", Number); seg("#opt-prop", "prop", String);
+renderSim();
 
 // start
 setLevel(level);
