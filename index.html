@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supercharger Field Guide</title>
+<style>
+:root{--ink:#171a20;--muted:#5c5e62;--soft:#f4f4f4;--line:#e2e3e3;--blue:#3e6ae1;--green:#12b76a;--red:#e5484d;--bg:#fff;--card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#eeeeee;--muted:#a2a3a5;--soft:#1f2125;--line:#2e3035;--bg:#111214;--card:#17181b}}
+:root[data-theme="dark"]{--ink:#eeeeee;--muted:#a2a3a5;--soft:#1f2125;--line:#2e3035;--bg:#111214;--card:#17181b}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{max-width:1120px;margin:auto;display:flex;align-items:center;gap:16px;padding:12px 20px;flex-wrap:wrap}
+.brand{font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:13px;margin-right:auto}
+nav{display:flex;gap:4px}
+nav button,.pill{border:0;background:transparent;color:var(--ink);font:inherit;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer}
+nav button:hover,nav button[aria-current="true"]{background:var(--soft)}
+.levels{display:flex;background:var(--soft);border-radius:8px;padding:3px}
+.levels button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:500;padding:5px 12px;border-radius:6px;cursor:pointer}
+.levels button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+main{max-width:1120px;margin:auto;padding:0 20px 80px}
+.hero{text-align:center;padding:64px 0 40px}
+.hero h1{font-size:clamp(30px,5vw,44px);font-weight:500;letter-spacing:-.01em;margin:0}
+.hero p{color:var(--muted);margin:10px auto 0;max-width:640px}
+.cta{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.btn{border:0;font:inherit;font-weight:500;font-size:14px;padding:10px 28px;border-radius:6px;cursor:pointer;min-width:180px}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.ghost{background:var(--soft);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.note{font-size:12px;color:var(--muted);text-align:center;margin-top:18px}
+.layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:40px}
+.toc{position:sticky;top:76px;align-self:start;font-size:13px}
+.toc a{display:block;padding:6px 10px;border-radius:6px;text-decoration:none;color:var(--muted)}
+.toc a:hover{background:var(--soft);color:var(--ink)}
+section.topic{padding:28px 0;border-top:1px solid var(--line);scroll-margin-top:70px}
+section.topic:first-child{border-top:0;padding-top:0}
+.topic h2{font-size:24px;font-weight:500;margin:0 0 4px}
+.topic .lede{color:var(--muted);margin:0 0 18px}
+.topic h3{font-size:15px;font-weight:600;margin:22px 0 8px}
+.topic ul{padding-left:20px;margin:8px 0}
+.topic li{margin:4px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 4px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:500;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+td:first-child{color:var(--muted);width:42%}
+.tablewrap{overflow-x:auto}
+.src{font-size:12px;color:var(--muted)}
+.callout{background:var(--soft);border-radius:10px;padding:12px 16px;margin:14px 0;font-size:14px}
+.callout b{font-weight:600}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--muted)}
+/* flashcards */
+.center{max-width:720px;margin:auto}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0 22px}
+select{font:inherit;font-size:14px;padding:8px 12px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.flash{perspective:1400px;height:340px;cursor:pointer;margin:0 auto}
+.flash .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;border:1px solid var(--line);background:var(--card);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.face .q{font-size:clamp(18px,2.6vw,22px);font-weight:500}
+.face .a{font-size:clamp(17px,2.4vw,20px)}
+.face.back{transform:rotateY(180deg);background:var(--soft)}
+.face .meta{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.face .hint{position:absolute;bottom:14px;font-size:12px;color:var(--muted)}
+.row{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.progress{height:4px;background:var(--soft);border-radius:4px;overflow:hidden;margin:14px 0 0}
+.progress span{display:block;height:100%;background:var(--blue);transition:width .3s}
+.count{text-align:center;color:var(--muted);font-size:13px;margin-top:8px}
+/* quiz */
+.qcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--card);box-shadow:0 6px 24px rgba(0,0,0,.05)}
+.qcard h3{font-size:19px;font-weight:500;margin:6px 0 18px}
+.opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;padding:12px 16px;border-radius:10px;margin:8px 0;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.right{border-color:var(--green);background:color-mix(in srgb,var(--green) 12%,var(--card))}
+.opt.wrong{border-color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--card))}
+.explain{margin-top:14px;padding:12px 16px;background:var(--soft);border-radius:10px;font-size:14px}
+.score{text-align:center;padding:30px 0}
+.score .big{font-size:56px;font-weight:500}
+.missed{margin-top:20px}
+.missed li{margin:10px 0}
+[hidden]{display:none!important}
+footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+@media (max-width:860px){.layout{grid-template-columns:1fr}.toc{display:none}.flash{height:380px}}
+@media (max-width:560px){.bar{gap:10px}.brand{width:100%}.btn{min-width:0;flex:1}}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">Supercharger Field Guide</div>
+    <nav>
+      <button data-view="learn" aria-current="true">Learn</button>
+      <button data-view="cards">Flashcards</button>
+      <button data-view="quiz">Quiz</button>
+    </nav>
+    <div class="levels" role="group" aria-label="Difficulty">
+      <button data-level="1" aria-pressed="true">Basics</button>
+      <button data-level="2" aria-pressed="false">Installer</button>
+      <button data-level="3" aria-pressed="false">Designer</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- LEARN -->
+  <div id="view-learn">
+    <div class="hero">
+      <h1>Design and install V4 Superchargers</h1>
+      <p>V4 cabinets and V4 posts: stall layouts, bollards, wire runs, trenching, clearances, and what changes for the Semi Megacharger. Study here, then test yourself.</p>
+      <div class="cta">
+        <button class="btn primary" data-go="cards">Study flashcards</button>
+        <button class="btn ghost" data-go="quiz">Take a quiz</button>
+      </div>
+      <p class="note">Private study notes built from the Tesla documents in your Downloads, several marked Proprietary &amp; Confidential. Keep this file to yourself. Always design to the current Tesla documents, the stamped plans, and the AHJ.</p>
+    </div>
+    <div class="layout">
+      <aside class="toc" id="toc"></aside>
+      <div id="topics"></div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="view-cards" hidden>
+    <div class="hero"><h1>Flashcards</h1><p id="cards-sub">Tap a card to flip it. Mark what you know and what needs another look.</p></div>
+    <div class="center">
+      <div class="toolbar">
+        <select id="card-topic" aria-label="Topic"></select>
+        <button class="pill" id="card-shuffle">Shuffle</button>
+        <button class="pill" id="card-review">Review missed only</button>
+      </div>
+      <div class="flash" id="flash" tabindex="0" aria-live="polite">
+        <div class="inner">
+          <div class="face front"><div class="meta"><span id="f-topic"></span><span id="f-level"></span></div><div class="q" id="f-q"></div><div class="hint">Tap to flip</div></div>
+          <div class="face back"><div class="meta"><span id="b-topic"></span><span id="b-src"></span></div><div class="a" id="f-a"></div></div>
+        </div>
+      </div>
+      <div class="progress"><span id="card-bar"></span></div>
+      <div class="count" id="card-count"></div>
+      <div class="row">
+        <button class="btn ghost" id="card-prev">Back</button>
+        <button class="btn ghost" id="card-miss">Still learning</button>
+        <button class="btn primary" id="card-know">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="view-quiz" hidden>
+    <div class="hero"><h1>Quiz</h1><p id="quiz-sub"></p></div>
+    <div class="center">
+      <div id="quiz-start">
+        <div class="toolbar">
+          <select id="quiz-topic" aria-label="Topic"></select>
+          <select id="quiz-len" aria-label="Length"><option value="10">10 questions</option><option value="20">20 questions</option><option value="999">All questions</option></select>
+        </div>
+        <div class="cta"><button class="btn primary" id="quiz-go">Start quiz</button></div>
+        <p class="note" id="quiz-best"></p>
+      </div>
+      <div id="quiz-run" hidden>
+        <div class="qcard">
+          <div style="display:flex;justify-content:space-between" class="src"><span id="q-num"></span><span id="q-topic"></span></div>
+          <h3 id="q-text"></h3>
+          <div id="q-opts"></div>
+          <div class="explain" id="q-explain" hidden></div>
+        </div>
+        <div class="progress"><span id="quiz-bar"></span></div>
+        <div class="row"><button class="btn primary" id="q-next" disabled>Next</button></div>
+      </div>
+      <div id="quiz-done" hidden>
+        <div class="score"><div class="big" id="s-big"></div><div id="s-text" class="src"></div></div>
+        <div class="cta"><button class="btn primary" id="quiz-again">New quiz</button><button class="btn ghost" id="quiz-retry">Retry missed</button></div>
+        <ol class="missed" id="s-missed"></ol>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>Sources: V4 Supercharger Cabinet datasheet (v1.0, Nov 2024) · V4 Supercharger Post datasheet · V4 Semi Charger Post datasheet · V4 Semicharger Design Guide (Rev 1, Sep 2025) · Commercial Charging Design Manual (Standard Site Design Guidelines) · Construction Quality Checklist · Site Survey Checklist. Study aid only, not an official Tesla publication.</footer>
+
+<script>
+/* ---------------------------------------------------------------- content */
+const S = { cab:"V4 Cabinet datasheet", post:"V4 Post datasheet", post23:"V4 Post datasheet (2023)", semi:"Semi Post datasheet", sg:"Semicharger Design Guide", dm:"Design Manual", qa:"Quality Checklist", ss:"Site Survey Checklist" };
+
+const TOPICS = [
+{ id:"system", title:"System overview", lede:"How the pieces fit: switchgear feeds cabinets, cabinets convert AC to DC and feed posts.", html:`
+<ul>
+<li><b>Power path:</b> utility transformer → switchboard/switchgear → Supercharger cabinet (AC→DC) → charge posts (DC to the car).</li>
+<li>One <b>V4 cabinet</b> powershares across up to <b>8 V4 posts</b>.</li>
+<li><b>Max distance cabinet ↔ post: 100 m (330 ft)</b>. Same limit for any CAT5/6 run.</li>
+<li>Posts carry <b>no high voltage when not in use</b>, which is why post impact protection usually isn't required.</li>
+<li>Cabinet ↔ post wiring: DC conductors (2 POS + 2 NEG + ground) plus a <b>Tesla signal cable bundle</b> (includes the 24 V post supply).</li>
+<li>Each V4 cabinet has an <b>integrated site controller with 4G LTE</b>. Multi-cabinet sites: <b>one leader + up to 9 followers</b>, ether-looped with shielded CAT6 and closed at the leader (enables powersharing and backup comms). Optional LAN backhaul to the leader needs a buffered power supply.</li>
+<li>Each cabinet's DC output is <b>isolated (floating)</b>: a single fault to ground can't energize grounded equipment or create PE fault current.</li>
+</ul>
+<div class="callout"><b>Approvals:</b> all construction drawings must be approved by Tesla Charging Deployment before permitting. Any deviation from the guidelines must be approved by the drawing approver before final submission.</div>
+<p class="src">${S.cab} · ${S.sg} G-105 · ${S.dm} p.4–5, 31, 61</p>` },
+
+{ id:"cabinet", title:"V4 Cabinet", lede:"AC/DC conversion for up to 8 posts. Big, heavy, and needs a 5 ft clear front.", html:`
+<div class="tablewrap"><table>
+<tr><th>Spec</th><th>Value</th></tr>
+<tr><td>Dimensions (D × W × H)</td><td>1175 × 1390 × 1925 mm (46¼ × 54¾ × 75 13/16 in)</td></tr>
+<tr><td>Weight</td><td>1,100 kg (2,420 lb)</td></tr>
+<tr><td>Service clearance</td><td><b>Front 60 in (1525 mm)</b> · sides 12 in · rear 12 in · top 12 in</td></tr>
+<tr><td>AC input</td><td>380–480 V AC (−5% / +10%), <b>3-phase 3-wire</b>, 50/60 Hz</td></tr>
+<tr><td>AC input current</td><td>1500 A or 1200 A configuration</td></tr>
+<tr><td>Max kVA</td><td>1247 kVA @480 V (1500 A) · 998 kVA @480 V (1200 A)</td></tr>
+<tr><td>AC conductors</td><td>Up to 6 per phase · L1–L3: 250–750 MCM (150–400 mm²) · PE: #4 AWG–500 MCM · Cu or Al · 90 °C rated</td></tr>
+<tr><td>Short-circuit current rating</td><td>65 kA</td></tr>
+<tr><td>Power factor / THD</td><td>≥ 0.99 · current THD &lt; 3% · voltage THD &lt; 2%</td></tr>
+<tr><td>DC post output</td><td>180–1000 V DC · 615 A per post @35 °C · up to 500 kW per post · max 8 posts</td></tr>
+<tr><td>DC post conductors</td><td>V+, V− 2 per pole, 250–750 MCM · PE #6 AWG–250 MCM · <b>recommended 600 MCM Al</b> · 1000 V rated</td></tr>
+<tr><td>Max DC voltage drop</td><td>10 V DC</td></tr>
+<tr><td>24 V post supply</td><td>#8 AWG Cu (10 mm²), inside the signal cable bundle</td></tr>
+<tr><td>Comms</td><td>4G LTE + Ethernet (WAN) · Ethernet between cabinets · signal bundle to posts</td></tr>
+<tr><td>Ingress / flood</td><td>Power electronics IP67 · termination bay IP54 / NEMA 3R · flood tolerance 8 in (178 mm)</td></tr>
+<tr><td>Noise · efficiency</td><td>60 dB(A) at 1 m @30 °C · &gt; 96% system efficiency</td></tr>
+<tr><td>Operating temp</td><td>−30 to 50 °C (−22 to 122 °F)</td></tr>
+</table></div>
+<h3>AC feeder (switchboard → cabinet)</h3>
+<ul><li>Recommended: <b>(6) 4 in conduits</b>, each with <b>(3) 750 kcmil Al</b> (one per phase, <b>no neutral</b>) + EGC: <b>350 kcmil Al</b> for the 1500 A / ~1250 kW cabinet, <b>250 kcmil Al</b> for the 1200 A / ~990 kW cabinet.</li>
+<li>Or direct-burial 3C 750 kcmil Al + 1C 350 kcmil Al tray cable (6 cables per cabinet).</li>
+<li>Mechanical lugs. Final sizing is the engineer of record's call.</li></ul>
+<h3>Pad & placement</h3>
+<ul><li>Cast-in-place pad sized per the engineer; reference detail is a <b>10 in slab, #5 @ 16 in each way</b>, on 6 in compacted Class 2 base. 1/2 in stainless anchors at <b>4 locations</b>, 6 in min from conduit window and pad edge.</li>
+<li>Slope the pad <b>0.5–2%</b> in one plane for drainage.</li>
+<li>Get the <b>conduit window template</b> before construction. AC, DC post, and comms conduits each have their own window; the plinth has openings for wireways and forklift tines.</li>
+<li>Keep the front service zone off traffic roads and abrupt grade changes. <b>20 ft</b> from fuel dispensing.</li></ul>
+<div class="callout"><b>Clearance note:</b> the V4 cabinet datasheet lists 12 in sides; the Semi design guide (same cabinet) shows <b>3 ft min</b> sides. Confirm with your Tesla design approver which applies to your configuration.</div>
+<p class="src">${S.cab} p.2–5 · ${S.sg} G-103, G-106</p>` },
+
+{ id:"post", title:"V4 Post", lede:"The dispenser: 615 A continuous, 3 m cable, mounts almost anywhere.", html:`
+<div class="tablewrap"><table>
+<tr><th>Spec</th><th>Value</th></tr>
+<tr><td>Max power</td><td>Up to 500 kW (with the V4 cabinet)</td></tr>
+<tr><td>Voltage / current</td><td>0–1000 V DC · 615 A continuous</td></tr>
+<tr><td>Connectors</td><td>NACS + CCS1 (CS-615-A2) or CCS2 (CS-615-E2)</td></tr>
+<tr><td>Weight</td><td>90 kg (200 lb)</td></tr>
+<tr><td>Dimensions</td><td>334 × 891 × 1946 mm (current datasheet)</td></tr>
+<tr><td>Cable length</td><td>3 m (9.8 ft)</td></tr>
+<tr><td>Input lugs</td><td>V+, V− <b>2 per pole</b>, 300–750 MCM (150–380 mm²) Cu/Al</td></tr>
+<tr><td>PE lugs</td><td>(2) 6 AWG–250 MCM (16–95 mm²) Cu/Al</td></tr>
+<tr><td>24 V input</td><td>#8 AWG Cu (10 mm²), 1 per pole</td></tr>
+<tr><td>Termination rating</td><td>90 °C · conductors 1000 V rated</td></tr>
+<tr><td>Ingress · flood</td><td>IP54 / NEMA 3R · flood tolerance 1015 mm (40 in)</td></tr>
+<tr><td>Noise</td><td>60 dBA below 40 °C, 65 dBA above 40 °C</td></tr>
+<tr><td>Max distance from cabinet</td><td>100 m (330 ft)</td></tr>
+<tr><td>Compliance</td><td>UL 2202, CSA 22.2 #107.1, IEC 61851-1/-23, NEC Article 625 · ISO 15118-2, DIN 70121, OCPP 2.0.1</td></tr>
+<tr><td>Payment module (optional)</td><td>3.5 in touchscreen, contactless + RFID</td></tr>
+</table></div>
+<h3>Clearances</h3>
+<ul><li><b>Service side 18 in (457 mm)</b> · <b>non-service side 5 in (127 mm)</b>.</li>
+<li>Space-constrained? Mount it "backwards" (handle on the user's right) and it can sit <b>5 in from a wall</b>. Not preferred.</li></ul>
+<h3>Mounting</h3>
+<ul>
+<li>Metal or concrete base (poured or precast), or bolted directly to a concrete or asphalt finished surface.</li>
+<li>On a slope, mount on a level base. <b>Leveling nuts correct up to 4% slope.</b></li>
+<li>The whole bottom of the post is open for conduit. (4) 11/16 in anchor holes. Favor the (2) 4 in + (1) 1.5 in conduits toward the cable terminus side for an easier pull.</li>
+<li><b>Conduit stub-up: 2–4 in (50–100 mm)</b> above the concrete.</li>
+<li>Surface-mounted post, conductor entry options: core up through the deck · <b>handle/dock-side knockout (preferred for on-the-line)</b> · field skin cutout on the dock side (cut down to the skin edge so service can remove the skin).</li>
+</ul>
+<h3>Wireway (above-ground runs)</h3>
+<ul>
+<li>Max 20% fill (NEC 376.22(A)). One post's conductors ≈ <b>3.8 in²</b>.</li>
+<li><b>10 × 10 in wireway</b> carries up to 4 posts. <b>5 × 5 in</b> is enough for one post branch. Branches can transition to conduit.</li>
+<li>Derating applies over 30 current-carrying conductors (more than 6 posts).</li>
+<li>Bond wireway with <b>#1/0 Cu</b>; jumpers per NEC 250.102.</li>
+</ul>
+<p class="src">${S.post} · ${S.dm} p.76–78, 88 · ${S.sg} G-106</p>` },
+
+{ id:"layout", title:"Stalls & layouts", lede:"Where posts go relative to stalls. Behind the curb, right-justified, is the default.", html:`
+<div class="tablewrap"><table>
+<tr><th>Minimum</th><th>Dimension</th></tr>
+<tr><td>Standard stall</td><td>9 ft × 17 ft (2750 × 5180 mm)</td></tr>
+<tr><td>Drive aisle</td><td>20 ft (6100 mm)</td></tr>
+<tr><td>Stall width, post/obstruction on 1 side</td><td>10 ft 6 in</td></tr>
+<tr><td>Stall width, posts/obstructions on 2 sides</td><td>11 ft</td></tr>
+<tr><td>Posts mounted outside the stall</td><td>9 ft (max effective width 11 ft)</td></tr>
+<tr><td>Clear space next to a wall/bollard (9 ft stall)</td><td>1 ft (310 mm)</td></tr>
+<tr><td>Curb overhang counted toward depth</td><td>Up to 2 ft (if the AHJ allows)</td></tr>
+<tr><td>Trailer stall</td><td>13 ft 6 in × 34 ft, 24 ft drive aisle at entry and exit · max 10% of stalls</td></tr>
+<tr><td>Pull-through stall width</td><td>One-way 10 ft 6 in · two-way 11 ft · 24 ft aisle both sides</td></tr>
+<tr><td>Fishbone spine</td><td>Single row 1.5 ft · double row 3 ft</td></tr>
+</table></div>
+<ul>
+<li>Post placement is measured from the <b>cable terminus</b> (end of the cable), not the post body.</li>
+<li><b>Behind the curb</b> is preferred: least space, best protection, easiest accessibility, smallest civil scope. <b>On the line</b> when there's no room behind the curb, for pull-through/trailer stalls, or to dodge utilities and easements.</li>
+<li><b>Right-justified</b> posts are preferred.</li>
+<li>Angled stalls use the same placement; on-the-line keeps <b>8 ft from end of stall to terminus</b>.</li>
+<li><b>Angled stalls + one-way drive aisle are prohibited</b> (non-Tesla cars may need to back in or pull in).</li>
+<li>Single-row fishbone isn't recommended where payment terminals are required (crowding, cable stealing).</li>
+<li>Post numbering runs <b>left to right</b> from the customer's view: cabinet number + A–D (1A, 1B, 1C, 1D). HPWC posts are numbers only.</li>
+<li>Per-stall signage is discouraged. If used, keep the bottom of the lowest sign about <b>80 in</b> above grade where people walk.</li>
+</ul>
+<p class="src">${S.dm} p.7–22</p>` },
+
+{ id:"bollards", title:"Impact protection & bollards", lede:"When posts need protection, and how bollards have to be placed.", html:`
+<ul>
+<li>NEC requires protection for energized equipment. Supercharger posts de-energize when not in use, so they <b>usually don't need protection</b>, except in the layouts below.</li>
+<li><b>Required:</b> all <b>on-the-line</b> posts (bollards are the only acceptable method) · <b>single-row fishbone</b> · all <b>L2 HPWC</b> posts that could be hit.</li>
+<li><b>Encouraged, not required:</b> double-row fishbone.</li>
+</ul>
+<h3>Methods</h3>
+<ul>
+<li><b>Curbs:</b> only as the sole protection if ≥ <b>6 in</b> tall. Non-post equipment must be &gt; <b>5 ft</b> from the curb face without extra protection. Curb-only post protection is highly discouraged.</li>
+<li><b>Parking stops:</b> cheapest, least protection. Max height <b>4 in (100 mm)</b>. Stop to curb/obstruction <b>3 ft</b>; stop to wall <b>4 ft</b>. Often banned where snow is plowed. Check they don't kill cable reach.</li>
+<li><b>Bollards</b> (preferred): <b>fixed</b> (own foundation; transformers, cabinets, switchboards; <b>never inside equipment service clearances</b>), <b>removable</b> (when space is tight), <b>surface-mounted</b> rebounding/offset (mainly a deterrent and visual cue for posts).</li>
+</ul>
+<h3>Placement rules</h3>
+<ul>
+<li>A predictable vehicle path must hit the bollard <b>before</b> the post.</li>
+<li>Must not hinder normal post use.</li>
+<li>Must not block the <b>front door swing</b> of Tesla vehicles; avoid all door swings where feasible.</li>
+<li><b>Semi:</b> place the bollard so it shields the post from the truck's approach, on the <b>opposite side of the post from the entry flow</b>.</li>
+</ul>
+<p class="src">${S.dm} p.23–27 · ${S.sg} G-101</p>` },
+
+{ id:"electrical", title:"Wire runs & electrical", lede:"Conductor sizing, breakers, grounding, and comms.", html:`
+<h3>V4 DC post circuit (cabinet → post)</h3>
+<ul><li><b>4 in conduit</b> with <b>(4) 600 MCM Al</b> or <b>(4) 350 MCM Cu</b> (two POS, two NEG) + <b>2/0 AWG Cu EGC</b> + Tesla signal cable bundle.</li>
+<li>DC post conductors are <b>certified equipment wiring</b>: Tesla specifies them. Use only <b>1000 V rated</b> conductors.</li></ul>
+<h3>Feeder & terminations</h3>
+<ul><li>AC feeder to each V4 cabinet: see the V4 Cabinet section ((6) 4 in conduits of (3) 750 kcmil Al + Al EGC, no neutral).</li>
+<li>V4 cabinet AC terminations: up to 6 per phase, 250–750 MCM, 90 °C rated. 65 kA SCCR.</li>
+<li>Cabinet → post: mechanical lugs for power, push-and-clip terminals for the signal bundle.</li>
+<li><b>Anti-oxidation compound on all aluminum</b>; torque to spec and torque-mark.</li></ul>
+<h3>Grounding</h3>
+<ul><li>Every piece of equipment needs a solid PE connection. Posts only need PE back to their cabinet's PE bus.</li>
+<li>Equipotential bonding / step-touch is on the design firm and PE.</li></ul>
+<h3>Comms</h3>
+<ul><li>CAT5e/CAT6 (shielded recommended), <b>330 ft max</b> per run.</li>
+<li>Put cellular equipment outdoors, away from big buildings.</li></ul>
+<p class="src">${S.dm} p.60–61, 82–86 · ${S.cab} · ${S.sg} G-106</p>` },
+
+{ id:"trench", title:"Trenching & conduit", lede:"Thermal rules decide spacing, depth, and backfill.", html:`
+<ul>
+<li><b>Up to 16</b> DC post conduits in a trench: no spacing needed, but backfill must be engineered fill with <b>Rho &lt; 100 °C·m/W</b>.</li>
+<li><b>Max 24 in</b> to the top of the upper conduits (V4 posts).</li>
+<li><b>More than 16</b>: groups of ≤ 16 with <b>24 in</b> between groups.</li>
+<li><b>4 or fewer</b> DC post conduits: no engineered fill needed.</li>
+<li>Detectable <b>red warning tape 8 in below</b> the surface.</li>
+<li>Conduit may go deeper than specified for 10 ft or 10% (whichever is less) to cross utilities, make turn-ups, or avoid obstructions.</li>
+<li>If no conduit racks, use horizontal/vertical conduits or stakes to hold spacing. Stagger conduits to fit the equipment conduit window; tapers max 10 ft.</li>
+<li>Route trenches through softscape over hardscape when you can; co-locate equipment near the middle of the site to shorten runs.</li>
+</ul>
+<h3>V4 cabinet AC feeder trench (4 in conduits)</h3>
+<div class="tablewrap"><table>
+<tr><th>Cabinet circuits</th><th>Max Rho · depth</th></tr>
+<tr><td>1</td><td>Rho 120 · max 28 in · min 24 in vehicular / 18 in non-vehicular</td></tr>
+<tr><td>2</td><td>Rho 90 · max 28 in · min 24 in / 18 in</td></tr>
+<tr><td>3</td><td>Rho 60 · max 28 in · min 24 in / 6 in</td></tr>
+</table></div>
+<ul><li>Max 18 conduits per group, <b>stacked no more than 2 high</b>, 24 in between groups.</li></ul>
+<h3>Backfill</h3>
+<div class="tablewrap"><table>
+<tr><th>Max Rho</th><th>Backfill</th></tr>
+<tr><td>Rho 60</td><td>Concrete, min 3,000 psi at 28 days</td></tr>
+<tr><td>Rho 90</td><td>Fluidized thermal slurry, min 150 psi at 28 days</td></tr>
+<tr><td>Rho 120</td><td>Native soil / sand</td></tr>
+</table></div>
+<ul><li>Min <b>2 in</b> of approved backfill on all sides of conduits. Approved backfill needs documentation of its tested Rho.</li>
+<li>Mixed circuit types in one trench: use the larger spacing requirement.</li></ul>
+<p class="src">${S.dm} p.28, 59, 86 · ${S.sg} G-106</p>` },
+
+{ id:"civil", title:"Foundations & grading", lede:"Pads, slopes, anchors, and keep-outs.", html:`
+<ul>
+<li>Cabinets and posts need a foundation that handles the weight plus frost, wind, and seismic loads.</li>
+<li><b>Slope:</b> one plane, positive drainage. V4 cabinet and post pads 0.5–2%; Supercharger slabs 1–2%; switchboard slabs 0.5%.</li>
+<li>Co-located equipment? A single shared pad can be cheaper than separate foundations. Overlapping service clearances saves space (respect easements and grading).</li>
+<li>Don't put a cabinet's front clearance or a post's rear clearance over abrupt elevation changes or a traffic road.</li>
+<li><b>20 ft minimum</b> between fuel dispensing and electrical equipment.</li>
+<li>Get the <b>conduit window template</b> before construction and use it to lay out conduits.</li>
+<li>Anchors: <b>6 in min</b> from anchors to conduit window and pad edge. Epoxy anchors not drilled until <b>7 days</b> after the pour.</li>
+<li>Max continuous slab <b>50 ft</b> without an expansion joint.</li>
+<li>Concrete (Semi guide): cabinet pad 2,500 psi, post pad 4,500 psi at 28 days · no chloride admixtures · air-entrained when exposed · cover 3 in against earth, 2 in slab-on-grade.</li>
+</ul>
+<p class="src">${S.dm} p.29–30 · ${S.sg} G-103, G-104</p>` },
+
+{ id:"semi", title:"Megacharger (Semi) differences", lede:"Bigger power, bigger conductors, bigger stalls.", html:`
+<div class="tablewrap"><table>
+<tr><th></th><th>V4 Supercharger post</th><th>V4 Semi (MCS) post</th></tr>
+<tr><td>Standard</td><td>NACS / CCS</td><td>MCS (Megawatt Charging)</td></tr>
+<tr><td>Max power</td><td>500 kW</td><td><b>1,200 kW</b></td></tr>
+<tr><td>Continuous current</td><td>615 A</td><td><b>1,100 A</b></td></tr>
+<tr><td>Input lugs</td><td>2 per pole</td><td><b>4 per pole</b>, 300–750 MCM</td></tr>
+<tr><td>PE lugs</td><td>(2) 6 AWG–250 MCM</td><td>(4) 2/0–350 MCM</td></tr>
+<tr><td>Weight</td><td>90 kg</td><td>100 kg (220 lb)</td></tr>
+<tr><td>Noise @1 m</td><td>60/65 dBA</td><td>70 dBA</td></tr>
+<tr><td>Protocol</td><td>ISO 15118-2</td><td>ISO 15118-20</td></tr>
+</table></div>
+<h3>Stalls</h3>
+<ul><li>Truck + trailer stalls: Tesla recommends <b>70–84 ft</b> long. Drive-thru and angled back-in (30–60°) layouts shown at 19 ft / 14 ft 8 in widths.</li>
+<li>Tractor-only stalls ~13 ft 6 in wide × 25 ft.</li>
+<li>Accessible Semi charge handle max <b>48 in</b> high.</li></ul>
+<h3>Cabinet & post</h3>
+<ul><li>Semi cabinet: front clearance <b>5 ft</b>, side clearance <b>3 ft min</b>, overhead 1 ft 6 in. Service zone must be clear of vehicle traffic.</li>
+<li>Semi post: rear (service) clearance 1 ft 6 in.</li>
+<li>Each cabinet has an integrated site controller with LTE. Multi-cabinet: <b>one leader + up to 9 followers</b>, ether-looped with CAT6, loop closed at the leader.</li></ul>
+<h3>Conductors</h3>
+<ul><li><b>AC to each cabinet:</b> (6) 4 in conduits, each with (3) 750 kcmil Al + EGC (350 kcmil Al for 1250 kW, 250 kcmil for 990 kW). No neutral.</li>
+<li><b>DC to each post:</b> 4 in conduit, (4) 750 MCM Al (2 POS, 2 NEG) + 4/0 Al or 2/0 Cu EGC. Signal bundle in its own <b>1.25 in</b> conduit.</li>
+<li>Hybrid posts: (2) 4 in conduits for 1200 kW shared, (1) for 600 kW dedicated.</li>
+<li>AC-CAB trench: max depth 28 in, min 24 in under vehicles / 18 in non-vehicular. 1 circuit Rho 120, 2 circuits Rho 90, 3 circuits Rho 60. Max 18 conduits per group, stacked 2 high max, 24 in between groups.</li>
+<li>DC-POST trench: 9 in center-to-center (4 in Sch 40 PVC spacers), Rho 90, a post's conduits never stacked.</li></ul>
+<p class="src">${S.semi} · ${S.sg} G-101–G-106</p>` },
+
+{ id:"ada", title:"Accessibility", lede:"Mandatory in the US for public charging.", html:`
+<div class="tablewrap"><table>
+<tr><th>Element</th><th>Size</th></tr>
+<tr><td>Accessible stall</td><td>11 ft × 18 ft</td></tr>
+<tr><td>Access aisle</td><td>5 ft × 18 ft</td></tr>
+<tr><td>Clear floor space</td><td>2 ft 6 in × 4 ft</td></tr>
+<tr><td>Alternate port access area (optional)</td><td>2 ft</td></tr>
+<tr><td>Alternate port transit path (optional)</td><td>3 ft</td></tr>
+</table></div>
+<ul><li>All Tesla commercial stations must be accessible. When codes conflict, the <b>stricter</b> one wins.</li>
+<li><b>AHJ permit approval does not prove accessibility compliance.</b></li>
+<li>Reviewed by a Design Manager before lease signature. Can't comply? Walk away or get an approved exception.</li>
+<li>Key references: 2010 ADA, California Building Code Ch. 11B, Access Board TAD (2022).</li></ul>
+<p class="src">${S.dm} p.36–41</p>` },
+
+{ id:"qa", title:"Install & commissioning QA", lede:"What gets checked and photographed before handoff.", html:`
+<h3>Switchboard & TSC</h3>
+<ul><li>Site controller / network switch installed and powered, Ethernet to each cabinet; main bonding jumper installed.</li>
+<li>Breakers labeled per cabinet; Ethernet cables labeled; breaker settings per drawings.</li>
+<li>Cycle breakers with all post DC disconnects <b>off</b>. Leave the main breaker <b>closed</b> and the controller <b>powered</b>.</li></ul>
+<h3>Cabinet & post</h3>
+<ul><li>LV signal wires in the correct color order and post mapping.</li>
+<li>All DC, AC, and PE conductors <b>torqued to spec with torque marks</b>.</li>
+<li><b>Anti-oxidation compound on all aluminum.</b></li>
+<li><b>Duct seal</b> in all conduits. Resistance checks for shorts. Correct post labels.</li></ul>
+<h3>Photos</h3>
+<ul><li>Line and load side of main and branch breakers, main bonding jumper, breaker dial settings, nameplates, arc flash labels, address plaque.</li>
+<li>Inside each cabinet (AC, DC, bus, ground, comms) and inside <b>every</b> post: junction box terminations, conduit bell ends + duct seal, overall view.</li>
+<li>Clean site, wide shots with all equipment.</li></ul>
+<h3>Site survey basics</h3>
+<ul><li>24/7 unrestricted access (no gates or codes), well lit and secure.</li>
+<li>Restrooms without a purchase; food/drink within a <b>2-minute walk</b>.</li>
+<li>Measure transformer → cabinet and cabinet → posts; photograph the full trench path and surface type.</li></ul>
+<p class="src">${S.qa} · ${S.ss}</p>` },
+];
+
+/* flashcards: [topic, level, question, answer, source] */
+const CARDS = [
+["cabinet",1,"How many posts can one V4 cabinet feed?","Up to 8 posts, with powersharing.","cab"],
+["cabinet",1,"Front service clearance for a V4 cabinet?","60 in (1525 mm).","cab p.3"],
+["cabinet",2,"V4 cabinet side, rear, and top clearances?","12 in (300 mm) each.","cab p.3"],
+["cabinet",1,"How much does a V4 cabinet weigh?","1,100 kg (2,420 lb).","cab p.3"],
+["cabinet",2,"V4 cabinet AC input voltage and wiring?","380–480 V AC (−5%/+10%), 3-phase 3-wire, 50/60 Hz.","cab p.2"],
+["cabinet",2,"V4 cabinet AC input current options?","1500 A or 1200 A.","cab p.2"],
+["cabinet",3,"Max AC conductors per phase on a V4 cabinet, and size range?","Up to 6 per phase, 250–750 MCM (150–400 mm²), Cu or Al, 90 °C rated.","cab p.2"],
+["cabinet",3,"V4 cabinet short-circuit current rating?","65 kA.","cab p.2"],
+["cabinet",3,"Recommended DC post equipment wiring from a V4 cabinet?","300 mm² / 600 MCM aluminum.","cab p.2"],
+["cabinet",3,"Max DC voltage drop, cabinet to post?","10 V DC.","cab p.2"],
+["cabinet",2,"V4 cabinet flood tolerance?","8 in (178 mm).","cab p.3"],
+["cabinet",3,"V4 cabinet IP ratings?","Power electronics IP67; termination bay IP54 / NEMA 3R.","cab p.3"],
+["cabinet",2,"Max kVA of a 1500 A V4 cabinet at 480 V?","1247 kVA.","cab p.2"],
+["cabinet",3,"V4 cabinet power factor and current THD?","PF ≥ 0.99; current THD < 3%; voltage THD < 2%.","cab p.2"],
+["system",1,"Max distance from cabinet to post?","100 m (330 ft).","cab, post"],
+["system",1,"Max length of a CAT5/CAT6 run?","330 ft.","dm p.31"],
+["system",1,"Why do Supercharger posts usually not need impact protection?","They're de-energized (no high voltage) when not in use.","dm p.23"],
+["system",2,"What runs between cabinet and post besides DC conductors?","The Tesla signal cable bundle, which includes the 24 V post supply (#8 AWG Cu).","cab, post"],
+["system",3,"What does an isolated (floating) DC output protect against?","A single fault to ground can't energize grounded equipment or create fault current on the PE wire.","dm p.61"],
+["system",2,"What must happen before a site goes to permitting?","Construction drawings approved by Tesla Charging Deployment; any deviations approved by the drawing approver.","dm p.4–5"],
+["post",1,"V4 post continuous current?","615 A.","post"],
+["post",1,"V4 post max power?","Up to 500 kW.","post"],
+["post",1,"V4 post cable length?","3 m (9.8 ft).","post"],
+["post",1,"V4 post weight?","90 kg (200 lb).","post"],
+["post",1,"V4 post service-side and non-service-side clearance?","Service 18 in (457 mm); non-service 5 in (127 mm).","dm p.76"],
+["post",2,"V4 post flood tolerance?","1015 mm (40 in).","post"],
+["post",2,"V4 post input lugs?","V+ and V−, 2 per pole, 300–750 MCM (150–380 mm²), Cu or Al.","post"],
+["post",2,"V4 post PE lugs?","(2) 6 AWG–250 MCM (16–95 mm²), Cu or Al.","post"],
+["post",2,"Conduit stub-up height at a V4 post?","2–4 in (50–100 mm) above the concrete.","dm p.78"],
+["post",2,"How much slope can V4 post leveling nuts correct?","Up to 4%.","dm p.77"],
+["post",2,"How close can a V4 post get to a wall if mounted backwards?","5 in (handle on the user's right; not preferred).","dm p.77"],
+["post",3,"Preferred conductor entry for an on-the-line surface-mounted V4 post?","The dock/handle-side knockout, via conduit or wireway.","dm p.88"],
+["post",3,"Approximate conductor area per V4 post for wireway fill?","About 3.8 in².","dm p.88"],
+["post",3,"Wireway size for up to 4 V4 posts? For one post?","10 × 10 in for up to 4 posts; 5 × 5 in for one post branch.","dm p.88"],
+["post",3,"Max wireway fill and the code section?","20% (NEC 376.22(A)).","dm p.88"],
+["post",3,"Wireway bonding conductor size?","#1/0 Cu, with jumpers per NEC 250.102.","dm p.88"],
+["post",3,"When do wireway derates kick in for V4 posts?","Over 30 current-carrying conductors (more than 6 posts).","dm p.88"],
+["post",2,"V4 post ingress rating?","IP54 / NEMA 3R.","post"],
+["layout",1,"Minimum standard charging stall?","9 ft × 17 ft.","dm p.7"],
+["layout",1,"Minimum drive aisle?","20 ft.","dm p.7"],
+["layout",1,"Preferred layout: behind the curb or on the line?","Behind the curb.","dm p.9"],
+["layout",1,"Preferred post justification?","Right-justified.","dm p.9"],
+["layout",2,"Stall width with a post or obstruction on one side? Both sides?","10 ft 6 in; 11 ft.","dm p.10"],
+["layout",2,"Post placement is measured from what point?","The cable terminus (end of the charging cable).","dm p.8"],
+["layout",2,"Trailer stall minimum size and aisle?","13 ft 6 in × 34 ft with a full 24 ft drive aisle at entry and exit.","dm p.16"],
+["layout",3,"Max share of trailer stalls without an exception?","10%.","dm p.16"],
+["layout",2,"One-way vs two-way pull-through stall widths?","One-way 10 ft 6 in; two-way 11 ft; 24 ft aisle both sides.","dm p.16"],
+["layout",3,"Min fishbone spine width, single row vs double row?","1.5 ft single row; 3 ft double row.","dm p.14–15"],
+["layout",2,"Clear space between a 9 ft stall and an adjacent wall or bollard?","1 ft (310 mm).","dm p.19"],
+["layout",3,"How much curb overhang can count toward stall depth?","Up to 2 ft from the curb face, if the jurisdiction allows.","dm p.12"],
+["layout",2,"Which stall arrangement is prohibited?","Angled stalls with a one-way drive aisle.","dm p.18"],
+["layout",3,"On-the-line distance from end of stall to terminus?","8 ft.","dm p.17"],
+["layout",2,"How are Supercharger posts numbered?","Cabinet number + A–D, left to right from the customer's view (1A, 1B…).","dm p.21"],
+["layout",3,"Min height to the bottom of signs where customers walk?","About 80 in.","dm p.22"],
+["bollards",1,"Which post layout always needs bollards?","On-the-line posts. Bollards are the only acceptable method.","dm p.26"],
+["bollards",1,"Preferred method of impact protection?","Bollards.","dm p.25"],
+["bollards",2,"Min curb height to serve as the only protection?","6 in.","dm p.23"],
+["bollards",2,"Max parking stop height?","4 in (100 mm).","dm p.23"],
+["bollards",2,"Parking stop distance to curb? To a wall?","3 ft to curb/obstruction; 4 ft to wall.","dm p.24"],
+["bollards",2,"Which fishbone layout requires protection?","Single row. Double row is encouraged but not required.","dm p.26"],
+["bollards",2,"Do L2 HPWC posts need impact protection?","Yes, almost always: no de-energize safety circuit like Superchargers.","dm p.27"],
+["bollards",3,"Can fixed bollards go inside equipment service clearances?","No. Use removable bollards when space is tight.","dm p.25"],
+["bollards",3,"Four bollard placement rules?","Hit before the post; don't hinder post use; don't block Tesla front door swing; avoid all door swings where feasible.","dm p.25"],
+["bollards",3,"Min distance from curb face for non-post equipment without extra protection?","More than 5 ft.","dm p.23"],
+["electrical",2,"V4 DC post conduit and conductors?","4 in conduit: (4) 600 MCM Al or (4) 350 MCM Cu (2 POS, 2 NEG), 2/0 Cu EGC, signal bundle.","dm p.86"],
+["electrical",1,"Voltage rating for DC conductors?","1000 V.","dm p.86"],
+["electrical",2,"Who specifies the DC post conductors?","Tesla. They're certified equipment wiring.","dm p.86"],
+["electrical",3,"Recommended AC feeder to a 1500 A V4 cabinet?","(6) 4 in conduits, each (3) 750 kcmil Al (no neutral) + 350 kcmil Al EGC.","sg G-106"],
+["electrical",3,"EGC per conduit for a 1200 A (~990 kW) V4 cabinet feeder?","250 kcmil Al.","sg G-106"],
+["system",2,"How do multiple V4 cabinets talk to each other?","One leader + up to 9 followers, ether-looped with shielded CAT6, loop closed at the leader.","sg G-105"],
+["cabinet",3,"V4 cabinet pad reference detail?","10 in slab, #5 @ 16 in each way, on 6 in compacted Class 2 base; 4 anchors 6 in min from the conduit window and edge.","sg G-103"],
+["electrical",2,"Termination style, cabinet to post?","Mechanical lugs for power; push-and-clip for the signal bundle.","dm p.82"],
+["electrical",2,"Where do posts get their PE connection?","Their cabinet's PE bus only.","dm p.60"],
+["trench",2,"Max DC post conduits in a trench with no spacing?","16, with engineered fill Rho < 100 °C·m/W.","dm p.86"],
+["trench",2,"Spacing between groups when over 16 DC post conduits?","24 in between groups of ≤ 16.","dm p.86"],
+["trench",2,"How many DC post conduits can skip engineered fill?","4 or fewer.","dm p.86"],
+["trench",2,"Max depth to the top of upper V4 DC post conduits?","24 in.","dm p.86"],
+["trench",1,"How deep is the warning tape?","Detectable red warning tape 8 in below the surface.","sg G-106"],
+["trench",3,"Backfill for Rho 60? Rho 90? Rho 120?","60: 3,000 psi concrete. 90: 150 psi fluidized thermal slurry. 120: native soil/sand.","sg G-106"],
+["trench",3,"Min approved backfill coverage around conduits?","2 in on all sides.","sg G-106"],
+["trench",3,"When can conduit run deeper than specified?","For 10 ft or 10% (whichever is less) to cross utilities, make turn-ups, or avoid obstructions.","sg G-106"],
+["civil",1,"Min distance between fuel dispensing and electrical equipment?","20 ft.","sg G-103"],
+["civil",2,"V4 cabinet and post pad slope?","0.5–2% in one plane.","sg G-103"],
+["civil",3,"Min distance from anchors to conduit window and pad edge?","6 in.","sg G-103"],
+["civil",3,"How soon after a pour can epoxy anchors be drilled?","Not less than 7 days.","sg G-104"],
+["civil",3,"Max continuous slab length without an expansion joint?","50 ft.","sg G-103"],
+["civil",2,"What should you get before laying out cabinet conduits?","The conduit window template.","sg G-103"],
+["semi",1,"What standard does the Semi post use?","MCS (Megawatt Charging Standard).","semi"],
+["semi",1,"Semi post max power and current?","1,200 kW; 1,100 A.","semi"],
+["semi",2,"Semi post input lugs per pole?","4 per pole (vs 2 on a V4 Supercharger post).","semi"],
+["semi",2,"Recommended Semi truck + trailer stall length?","70–84 ft.","sg G-101"],
+["semi",2,"Where does the bollard go at a Semi post?","Shielding the post from the truck's approach, on the opposite side of the post from the entry flow.","sg G-101"],
+["semi",3,"Semi DC post conductors?","4 in conduit, (4) 750 MCM Al (2 POS, 2 NEG), 4/0 Al or 2/0 Cu EGC; signal bundle in its own 1.25 in conduit.","sg G-106"],
+["semi",3,"Semi AC conduits per cabinet?","(6) 4 in conduits, each (3) 750 kcmil Al + Al EGC, no neutral.","sg G-106"],
+["semi",3,"Semi multi-cabinet comms?","One leader + up to 9 followers, ether-looped with CAT6, closed at the leader.","sg G-105"],
+["semi",3,"Semi cabinet side clearance vs V4 Supercharger cabinet?","Semi: 3 ft min. V4 Supercharger cabinet: 12 in.","sg G-103, cab"],
+["semi",3,"Max height of an accessible Semi charge handle?","48 in.","sg G-104"],
+["ada",2,"Accessible stall and access aisle size?","Stall 11 × 18 ft; aisle 5 × 18 ft.","dm p.40"],
+["ada",2,"Does AHJ permit approval prove accessibility compliance?","No.","dm p.39"],
+["ada",3,"Codes conflict on accessibility. Which wins?","The stricter one.","dm p.39"],
+["qa",1,"What goes on every aluminum termination?","Anti-oxidation compound.","qa"],
+["qa",1,"What marks go on torqued connections?","Torque marks.","qa"],
+["qa",1,"What seals every conduit at cabinets and posts?","Duct seal.","qa"],
+["qa",2,"State of the main breaker and TSC when you leave?","Main breaker closed; TSC powered up.","qa"],
+["qa",2,"State of post and DC bus disconnects when cycling breakers?","Off.","qa"],
+["qa",2,"Which posts need inside photos?","All of them: terminations, conduit bell ends + duct seal, overall view.","qa"],
+["qa",1,"Site survey: how close should food or drink be?","Within a 2-minute walk.","ss"],
+["qa",1,"Site survey: can the site have a gate or access code?","No. 24/7 unrestricted access.","ss"],
+];
+
+/* quiz: [topic, level, question, [correct, wrong, wrong, wrong], explanation] */
+const QUIZ = [
+["cabinet",1,"What is the front service clearance for a V4 cabinet?",["60 in","36 in","12 in","48 in"],"V4 cabinet: front 60 in (1525 mm); sides, rear, top 12 in."],
+["cabinet",1,"How many posts can a V4 cabinet feed?",["8","4","6","12"],"Up to 8 posts with powersharing."],
+["cabinet",2,"The V4 cabinet AC input is…",["380–480 V, 3-phase 3-wire","208 V single-phase","480 V, 3-phase 4-wire with neutral","277 V, 3-phase 4-wire"],"3-phase 3-wire, so no neutral is run to the cabinet."],
+["cabinet",2,"Which AC input current configurations does the V4 cabinet offer?",["1500 A or 1200 A","600 A or 400 A","2000 A only","800 A or 1000 A"],"1500 A AC or 1200 A AC."],
+["cabinet",3,"How many AC conductors per phase can land on a V4 cabinet?",["Up to 6","Up to 2","Up to 4","Up to 8"],"Max 6 per phase, 250–750 MCM."],
+["cabinet",3,"V4 cabinet short-circuit current rating?",["65 kA","22 kA","85 kA","100 kA"],"65 kA."],
+["cabinet",2,"V4 cabinet flood tolerance?",["8 in","40 in","2 in","24 in"],"178 mm (8 in). The post is 40 in."],
+["cabinet",3,"Maximum DC voltage drop from cabinet to post?",["10 V","3 V","25 V","1% of 480 V"],"10 V DC max drop."],
+["cabinet",1,"About how much does a V4 cabinet weigh?",["2,420 lb","750 lb","5,000 lb","14,000 lb"],"1,100 kg (2,420 lb)."],
+["system",1,"Max distance from cabinet to post?",["100 m / 330 ft","50 m / 165 ft","200 m / 650 ft","30 m / 100 ft"],"100 m (330 ft), same as the CAT run limit."],
+["system",2,"Why don't Supercharger posts usually need impact protection?",["They're de-energized when not in use","They're bolted with seismic anchors","They have breakaway cables","NEC exempts DC chargers"],"No high voltage at the post when not charging."],
+["system",3,"What does the cabinet's isolated DC output prevent?",["A single ground fault energizing grounded equipment","Harmonics on the utility side","Voltage drop over 10 V","Loss of comms"],"Each DC/DC module has an isolation transformer; the output floats."],
+["system",2,"Where does the 24 V post supply run?",["Inside the Tesla signal cable bundle","In its own 1 in conduit from the switchboard","On the PE conductor","From a local 120 V outlet"],"#8 AWG Cu, integrated in the signal bundle."],
+["post",1,"V4 post continuous current rating?",["615 A","350 A","1,100 A","500 A"],"615 A. The Semi post is 1,100 A."],
+["post",1,"V4 post cable length?",["3 m","5 m","2 m","7.3 m (24 ft)"],"3 m (9.8 ft)."],
+["post",1,"V4 post service-side clearance?",["18 in","5 in","36 in","12 in"],"Service 18 in, non-service 5 in."],
+["post",2,"How much slope can V4 post leveling nuts take up?",["4%","1%","8%","12%"],"Up to 4%. Steeper needs a level base."],
+["post",2,"Conduit stub-up at a V4 post foundation?",["2–4 in above the concrete","Flush with the concrete","6–8 in above","12 in above"],"50–100 mm (2–4 in)."],
+["post",2,"V4 post input lugs per pole?",["2","1","4","6"],"2 per pole, 300–750 MCM. Semi posts take 4."],
+["post",3,"For a surface-mounted on-the-line V4 post, the preferred conductor entry is…",["The dock/handle-side knockout","Coring through the deck","A field cut in the service side skin","Through the top cap"],"Dock-side knockout via conduit or wireway is preferred for on-the-line."],
+["post",3,"A 10 × 10 in wireway can carry conductors for how many V4 posts?",["Up to 4","Up to 2","Up to 8","Up to 6"],"~3.8 in² per post at 20% fill: 10 × 10 for up to 4."],
+["post",3,"Max wireway fill for V4 post conductors?",["20%","40%","53%","31%"],"NEC 376.22(A): 20%."],
+["post",3,"If a field skin cutout is used, why cut the skin down to its bottom edge?",["So service can remove the skin without disturbing the conductors","For ventilation","To meet NEMA 3R","To fit the leveling nuts"],"Lets service pull the skin off around the conduit or wireway."],
+["post",2,"Mounted backwards to save space, a V4 post can sit how close to a wall?",["5 in","18 in","0 in","12 in"],"The 5 in non-service clearance faces the wall. Not preferred."],
+["layout",1,"Minimum standard charging stall?",["9 × 17 ft","8 × 16 ft","10 × 20 ft","8.5 × 18 ft"],"9 ft × 17 ft with a 20 ft drive aisle."],
+["layout",1,"Which layout is preferred?",["Behind the curb","On the line","Single-row fishbone","Angled one-way"],"Behind the curb: least space, best protection, smallest scope."],
+["layout",1,"Preferred post justification?",["Right","Left","Centered on the stripe","Doesn't matter"],"Right-justified is preferred."],
+["layout",2,"Stall width with posts or obstructions on both sides?",["11 ft","9 ft","10 ft 6 in","12 ft"],"One side 10 ft 6 in; both sides 11 ft."],
+["layout",2,"Post placement dimensions reference what?",["The cable terminus","The post centerline","The charge handle","The curb face"],"The cable terminus is the basis for cable reach."],
+["layout",2,"Which is prohibited at Tesla charging sites?",["Angled stalls with a one-way drive aisle","Back-in stalls","Fishbone layouts","Pull-through stalls"],"Non-Tesla cars may need to pull in or back in, so one-way angled is out."],
+["layout",2,"Trailer stall minimum?",["13 ft 6 in × 34 ft, 24 ft aisle","10 ft × 24 ft, 20 ft aisle","12 ft × 30 ft, 20 ft aisle","9 ft × 40 ft, 24 ft aisle"],"13'6\" × 34' with a full 24' aisle at entry and exit."],
+["layout",3,"Without an exception, trailer stalls may be at most…",["10% of stalls","25% of stalls","1 per site","50% of stalls"],"Max 10%."],
+["layout",3,"Minimum spine width for a double-row fishbone?",["3 ft","1.5 ft","5 ft","2 ft"],"Single row 1.5 ft, double row 3 ft."],
+["layout",3,"How much curb overhang can count toward stall depth?",["Up to 2 ft","Up to 6 in","Up to 4 ft","None"],"Up to 2 ft from the curb face, if allowed."],
+["layout",2,"How are posts numbered?",["Cabinet # + A–D, left to right","Sequential numbers right to left","By breaker number","Random"],"e.g. 1A–1D for cabinet 1, left to right from the customer's view."],
+["bollards",1,"Which posts always need bollards?",["On-the-line posts","Behind-the-curb posts","Double-row fishbone posts","Posts in a garage"],"On-the-line posts need protection, and bollards are the only accepted method there."],
+["bollards",2,"A curb can be the only protection if it's at least…",["6 in tall","3 in tall","4 in tall","12 in tall"],"≥ 6 in, and even then curb-only is highly discouraged."],
+["bollards",2,"Max parking stop height?",["4 in","6 in","8 in","2 in"],"100 mm (4 in) to clear vehicles."],
+["bollards",2,"Which fishbone layout requires impact protection?",["Single row","Double row","Neither","Both"],"Single row required; double row encouraged."],
+["bollards",2,"Do L2 HPWC posts need protection?",["Yes, almost always","Never","Only indoors","Only on the line"],"They lack the Supercharger de-energize circuits."],
+["bollards",3,"Can fixed bollards sit in equipment service clearances?",["No","Yes, if painted yellow","Yes, if under 36 in tall","Only on the sides"],"Not allowed; use removable bollards when space is tight."],
+["bollards",3,"Which is NOT a Tesla bollard placement rule?",["Bollard must be within 12 in of the post","Struck before the post","Doesn't hinder post use","Doesn't block Tesla front door swing"],"There's no fixed distance rule; the other three are required."],
+["bollards",3,"At a Semi drive-thru or back-in stall, the bollard goes…",["Opposite side of the post from the entry flow","Directly in front of the cable","Behind the cabinet","On the entry side"],"Shield the post from the truck's approach."],
+["bollards",3,"Parking stop distance from its inside face to a wall?",["4 ft","3 ft","2 ft","5 ft"],"3 ft to a curb/obstruction, 4 ft to a wall."],
+["electrical",1,"Voltage rating for DC post conductors?",["1000 V","600 V","480 V","2000 V"],"Use only 1000 V rated conductors."],
+["electrical",3,"Recommended AC feeder to a 1500 A V4 cabinet?",["(6) 4 in conduits of (3) 750 kcmil Al + 350 kcmil Al EGC","(2) 4 in conduits of (4) 500 MCM Al","(1) 4 in conduit of (4) 600 MCM Al","(4) 3 in conduits of (4) 4/0 Cu"],"No neutral (3-phase 3-wire). 250 kcmil Al EGC for the 1200 A cabinet."],
+["trench",3,"V4 cabinet AC conduits may be stacked at most…",["2 high","3 high","4 high","Not at all"],"Max 18 conduits per group, 24 in between groups."],
+["system",3,"Multiple V4 cabinets are networked as…",["One leader + up to 9 followers on a CAT6 ether-loop","Every cabinet home-runs to the switchboard","Each on its own LTE only","A daisy chain with no loop"],"Loop closed at the leader; enables powersharing and backup comms."],
+["electrical",2,"V4 DC post circuit (Al)?",["4 in conduit, (4) 600 MCM Al, 2/0 Cu EGC + signal bundle","2 in conduit, (2) 4/0 Cu, #6 EGC","(2) 3 in conduits, (2) 600 MCM Al, 1/0 Cu","4 in conduit, (4) 750 MCM Al, 4/0 Al EGC"],"(4) 600 MCM Al or (4) 350 MCM Cu, 2 POS + 2 NEG. The 750 MCM option is the Semi post."],
+["electrical",2,"Who specifies the DC post conductors?",["Tesla (certified equipment wiring)","The utility","The AHJ","The installer's preference"],"Tesla takes responsibility for those conductors."],
+["electrical",2,"Posts get their PE connection from…",["Their cabinet's PE bus","A ground rod at each post","The switchboard directly","The signal bundle"],"Only back to the associated cabinet."],
+["trench",2,"Up to how many DC post conduits can share a trench without spacing (with engineered fill)?",["16","4","8","24"],"16, with Rho < 100 °C·m/W fill."],
+["trench",2,"More than 16 DC post conduits? Separate groups by…",["24 in","6 in","12 in","36 in"],"Groups of ≤ 16, 24 in apart."],
+["trench",2,"Max depth to the top of upper V4 DC post conduits?",["24 in","36 in","18 in","48 in"],"24 in max (thermal)."],
+["trench",1,"Warning tape goes…",["8 in below the surface","On top of the conduits","2 in below the surface","At 24 in"],"Detectable red tape, 8 in below the surface."],
+["trench",3,"Which backfill achieves Rho 90?",["Fluidized thermal slurry (150 psi)","3,000 psi concrete","Native soil","Pea gravel"],"Rho 60 concrete, Rho 90 slurry, Rho 120 native soil/sand."],
+["trench",3,"How many DC post conduits can go in without engineered fill?",["4 or fewer","8 or fewer","16 or fewer","None"],"Groups of 4 or fewer."],
+["trench",3,"Approved backfill coverage around conduits?",["2 in min on all sides","6 in on top only","1 in on sides","Not required"],"2 in min all sides, with tested Rho documentation."],
+["civil",1,"Min distance between fuel dispensing and electrical equipment?",["20 ft","10 ft","50 ft","5 ft"],"20 ft."],
+["civil",2,"Supercharger equipment slab slope?",["1–2% in one plane","0% (dead level)","3–5%","Any direction"],"Positive drainage in one plane. Switchboard slabs 0.5%."],
+["civil",3,"Epoxy anchors can be drilled no sooner than…",["7 days after the pour","24 hours after","28 days after","Immediately"],"Not less than 7 days."],
+["civil",3,"Min distance from anchors to the conduit window and pad edge?",["6 in","2 in","12 in","3 in"],"6 in min."],
+["civil",3,"Max continuous slab without an expansion joint?",["50 ft","20 ft","100 ft","30 ft"],"50 ft."],
+["civil",2,"Before laying out cabinet conduit, get…",["The conduit window template","The utility will-serve letter","The bollard spec","The arc flash study"],"Use the template when laying out cabinets."],
+["semi",1,"The Semi post uses which standard?",["MCS","NACS","CCS1","CHAdeMO"],"Megawatt Charging Standard."],
+["semi",1,"Semi post max power?",["1,200 kW","500 kW","350 kW","2,000 kW"],"1,200 kW, 1,100 A."],
+["semi",2,"Semi post input lugs per pole?",["4","2","1","6"],"4 per pole vs 2 on the V4 Supercharger post."],
+["semi",2,"Tesla's recommended Semi truck + trailer stall length?",["70–84 ft","40–50 ft","100–120 ft","34 ft"],"Depending on customer needs."],
+["semi",3,"Semi DC post conductors?",["(4) 750 MCM Al + 4/0 Al or 2/0 Cu EGC","(4) 600 MCM Al + 2/0 Cu EGC","(2) 500 MCM Cu + #2 EGC","(6) 750 kcmil Al"],"Signal bundle in its own 1.25 in conduit."],
+["semi",3,"AC conduits per Semi cabinet?",["6 × 4 in","2 × 4 in","4 × 3 in","8 × 4 in"],"Each with (3) 750 kcmil Al + Al EGC, no neutral."],
+["semi",3,"Semi cabinet side clearance?",["3 ft min","12 in","6 in","5 ft"],"Much more than the V4 Supercharger cabinet's 12 in."],
+["semi",3,"Multi-cabinet Semi sites use…",["One leader + up to 9 followers on a CAT6 ether-loop","One cabinet home-runs to every other cabinet","One TSC per cabinet","Wi-Fi mesh only"],"Loop closed at the leader."],
+["semi",3,"Semi DC-POST trench conduit spacing?",["9 in center-to-center","No spacing","24 in","3 in"],"Achieved with 4 in Sch 40 PVC spacers; a post's conduits are never stacked."],
+["ada",2,"Accessible charging stall size?",["11 × 18 ft","9 × 17 ft","12 × 20 ft","10 × 18 ft"],"With a 5 ft access aisle."],
+["ada",2,"AHJ permit approval means accessibility is compliant.",["False","True","Only in California","Only for posts"],"Permit approval isn't sufficient."],
+["ada",3,"State code and Tesla standard conflict on accessibility. Which applies?",["The stricter one","Tesla's","The state's","The federal ADA only"],"Stricter prevails."],
+["qa",1,"What goes on aluminum terminations?",["Anti-oxidation compound","Dielectric grease only","Electrical tape","Nothing"],"Required on all aluminum conductors."],
+["qa",1,"What seals the conduits at cabinets and posts?",["Duct seal","Spray foam","Silicone caulk","Nothing"],"Duct seal in all conduits."],
+["qa",2,"When cycling breakers at commissioning, post and DC bus disconnects should be…",["Off","On","Removed","Locked on"],"Then leave the main breaker closed and the TSC powered."],
+["qa",2,"Which posts need inside photos?",["Every post","One per cabinet","Only ADA posts","None"],"Junction box, bell ends + duct seal, overall view, for ALL posts."],
+["qa",1,"A good site has food or drink within…",["A 2-minute walk","A 10-minute drive","1 mile","15 minutes"],"Per the site survey checklist."],
+];
+
+/* ---------------------------------------------------------------- app */
+const $ = (s) => document.querySelector(s);
+const store = { get(k, d) { try { const v = localStorage.getItem("scfg:" + k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set(k, v) { try { localStorage.setItem("scfg:" + k, JSON.stringify(v)); } catch {} } };
+const LEVELS = { 1: "Basics", 2: "Installer", 3: "Designer" };
+let level = store.get("level", 1);
+const topicTitle = (id) => TOPICS.find((t) => t.id === id)?.title || id;
+const srcName = (s) => s.replace(/^(\w+)/, (k) => S[k] || k);
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+// A level includes everything at or below it: Designer sees all.
+const atLevel = (l) => l <= level;
+
+// learn
+$("#topics").innerHTML = TOPICS.map((t) => `<section class="topic" id="t-${t.id}"><h2>${t.title}</h2><p class="lede">${t.lede}</p>${t.html}</section>`).join("");
+$("#toc").innerHTML = TOPICS.map((t) => `<a href="#t-${t.id}">${t.title}</a>`).join("");
+
+// views
+function show(view) {
+  for (const v of ["learn", "cards", "quiz"]) $("#view-" + v).hidden = v !== view;
+  document.querySelectorAll("nav button").forEach((b) => b.setAttribute("aria-current", String(b.dataset.view === view)));
+  window.scrollTo(0, 0);
+  store.set("view", view);
+}
+document.querySelectorAll("nav button").forEach((b) => b.onclick = () => show(b.dataset.view));
+document.querySelectorAll("[data-go]").forEach((b) => b.onclick = () => show(b.dataset.go));
+
+// topic selects
+const topicOptions = `<option value="all">All topics</option>` + TOPICS.map((t) => `<option value="${t.id}">${t.title}</option>`).join("");
+$("#card-topic").innerHTML = topicOptions;
+$("#quiz-topic").innerHTML = topicOptions;
+
+// difficulty
+function setLevel(l) {
+  level = l; store.set("level", l);
+  document.querySelectorAll(".levels button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.level === l)));
+  buildDeck(); quizIntro();
+}
+document.querySelectorAll(".levels button").forEach((b) => b.onclick = () => setLevel(+b.dataset.level));
+
+// flashcards
+let deck = [], pos = 0, reviewOnly = false;
+const known = new Set(store.get("known", []));
+const missed = new Set(store.get("missed", []));
+const cardKey = (c) => c[2];
+function buildDeck(keepShuffle) {
+  const t = $("#card-topic").value;
+  let d = CARDS.filter((c) => atLevel(c[1]) && (t === "all" || c[0] === t));
+  if (reviewOnly) d = d.filter((c) => missed.has(cardKey(c)));
+  deck = keepShuffle ? shuffle(d) : d;
+  pos = 0; renderCard();
+  $("#cards-sub").textContent = `${deck.length} cards at ${LEVELS[level]} level${level < 3 ? " and below" : ""}. Tap a card to flip it.`;
+}
+function renderCard() {
+  const el = $("#flash"); el.classList.remove("flipped");
+  if (!deck.length) {
+    $("#f-q").textContent = reviewOnly ? "Nothing left to review. Nice." : "No cards here at this level.";
+    $("#f-a").textContent = ""; $("#f-topic").textContent = ""; $("#f-level").textContent = ""; $("#b-topic").textContent = ""; $("#b-src").textContent = "";
+    $("#card-count").textContent = ""; $("#card-bar").style.width = "0"; return;
+  }
+  const c = deck[pos];
+  setTimeout(() => { $("#f-a").textContent = c[3]; $("#b-src").textContent = srcName(c[4]); }, el.classList.contains("flipped") ? 250 : 0);
+  $("#f-q").textContent = c[2]; $("#f-topic").textContent = topicTitle(c[0]); $("#b-topic").textContent = topicTitle(c[0]);
+  $("#f-level").textContent = LEVELS[c[1]];
+  $("#card-count").textContent = `${pos + 1} of ${deck.length} · ${known.size} marked known`;
+  $("#card-bar").style.width = ((pos + 1) / deck.length) * 100 + "%";
+}
+function nextCard() { if (pos < deck.length - 1) { pos++; renderCard(); } else { $("#card-count").textContent = "End of deck. Shuffle or switch topics to keep going."; } }
+$("#flash").onclick = () => $("#flash").classList.toggle("flipped");
+$("#flash").onkeydown = (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); $("#flash").classList.toggle("flipped"); } };
+$("#card-know").onclick = () => { if (!deck.length) return; const k = cardKey(deck[pos]); known.add(k); missed.delete(k); store.set("known", [...known]); store.set("missed", [...missed]); nextCard(); };
+$("#card-miss").onclick = () => { if (!deck.length) return; const k = cardKey(deck[pos]); missed.add(k); known.delete(k); store.set("known", [...known]); store.set("missed", [...missed]); nextCard(); };
+$("#card-prev").onclick = () => { if (pos > 0) { pos--; renderCard(); } };
+$("#card-shuffle").onclick = () => buildDeck(true);
+$("#card-topic").onchange = () => buildDeck();
+$("#card-review").onclick = () => { reviewOnly = !reviewOnly; $("#card-review").textContent = reviewOnly ? "Show all cards" : "Review missed only"; buildDeck(); };
+document.addEventListener("keydown", (e) => { if ($("#view-cards").hidden || e.target.tagName === "SELECT") return; if (e.key === "ArrowRight") $("#card-know").click(); if (e.key === "ArrowLeft") $("#card-prev").click(); });
+
+// quiz
+let qs = [], qi = 0, right = 0, wrong = [];
+function quizPool() { const t = $("#quiz-topic").value; return QUIZ.filter((q) => atLevel(q[1]) && (t === "all" || q[0] === t)); }
+function quizIntro() {
+  const n = quizPool().length;
+  $("#quiz-sub").textContent = `${n} questions available at ${LEVELS[level]} level${level < 3 ? " and below" : ""}.`;
+  const best = store.get("best-" + level, null);
+  $("#quiz-best").textContent = best != null ? `Your best at ${LEVELS[level]}: ${best}%` : "";
+}
+function startQuiz(pool) {
+  const len = +$("#quiz-len").value;
+  qs = shuffle(pool).slice(0, len).map((q) => ({ q, opts: shuffle(q[3]) }));
+  if (!qs.length) return;
+  qi = 0; right = 0; wrong = [];
+  $("#quiz-start").hidden = true; $("#quiz-done").hidden = true; $("#quiz-run").hidden = false;
+  renderQ();
+}
+function renderQ() {
+  const { q, opts } = qs[qi];
+  $("#q-num").textContent = `Question ${qi + 1} of ${qs.length}`; $("#q-topic").textContent = `${topicTitle(q[0])} · ${LEVELS[q[1]]}`;
+  $("#q-text").textContent = q[2]; $("#q-explain").hidden = true; $("#q-next").disabled = true;
+  $("#q-next").textContent = qi === qs.length - 1 ? "See results" : "Next";
+  $("#quiz-bar").style.width = (qi / qs.length) * 100 + "%";
+  const box = $("#q-opts"); box.innerHTML = "";
+  opts.forEach((o) => {
+    const b = document.createElement("button"); b.className = "opt"; b.textContent = o;
+    b.onclick = () => {
+      const ok = o === q[3][0];
+      box.querySelectorAll(".opt").forEach((x) => { x.disabled = true; if (x.textContent === q[3][0]) x.classList.add("right"); });
+      if (!ok) { b.classList.add("wrong"); wrong.push(qs[qi]); } else right++;
+      $("#q-explain").innerHTML = `<b>${ok ? "Correct." : "Not quite."}</b> ${q[4]}`; $("#q-explain").hidden = false; $("#q-next").disabled = false;
+    };
+    box.appendChild(b);
+  });
+}
+$("#q-next").onclick = () => { if (qi < qs.length - 1) { qi++; renderQ(); } else finishQuiz(); };
+function finishQuiz() {
+  $("#quiz-run").hidden = true; $("#quiz-done").hidden = false;
+  const pct = Math.round((right / qs.length) * 100);
+  $("#s-big").textContent = pct + "%";
+  $("#s-text").textContent = `${right} of ${qs.length} correct at ${LEVELS[level]} level`;
+  if (pct > (store.get("best-" + level, -1))) store.set("best-" + level, pct);
+  $("#quiz-retry").hidden = !wrong.length;
+  $("#s-missed").innerHTML = wrong.length ? wrong.map(({ q }) => `<li><b>${q[2]}</b><br><span class="src">Answer: ${q[3][0]}. ${q[4]}</span></li>`).join("") : "";
+}
+$("#quiz-go").onclick = () => startQuiz(quizPool());
+$("#quiz-again").onclick = () => { $("#quiz-done").hidden = true; $("#quiz-start").hidden = false; quizIntro(); };
+$("#quiz-retry").onclick = () => startQuiz(wrong.map((w) => w.q));
+$("#quiz-topic").onchange = quizIntro;
+
+// start
+setLevel(level);
+show(store.get("view", "learn"));
+</script>
+</body>
+</html>
