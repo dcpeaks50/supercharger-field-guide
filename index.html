@@ -94,7 +94,12 @@ select{font:inherit;font-size:14px;padding:8px 12px;border-radius:6px;border:1px
 .msg.a ul{margin:4px 0 8px;padding-left:20px}
 .msg.err{border-color:var(--red)}
 .typing{color:var(--muted);font-size:14px}
-.sim{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:24px;align-items:start}
+.sim{display:grid;grid-template-columns:1fr;gap:20px;align-items:start}
+.sim .panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 28px}
+.sim .panel>.step,.sim .panel>h2{grid-column:1/-1}
+.sim .panel>p,.sim .panel>ul{grid-column:1}
+.sim .panel>.mat,.sim .panel>.xsec{grid-column:2;grid-row:3/span 6}
+@media (max-width:760px){.sim .panel{grid-template-columns:1fr}.sim .panel>.mat,.sim .panel>.xsec{grid-column:1;grid-row:auto}}
 .stage-svg{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line);background:#e9ecef}
 .sim-controls{display:flex;align-items:center;gap:12px;margin-top:12px}
 .play{width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font-size:16px;cursor:pointer;flex:none}
@@ -227,7 +232,7 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
     <p class="assume">Assumptions: a restaurant parking lot, one V4 cabinet (1500 A, 480 V 3-phase), 4–8 posts behind the curb, right-justified, ≈100 ft from cabinet to the farthest post, asphalt lot, no surprises underground. Sizing follows the Tesla recommendations in this guide; your engineer of record has the final say.</p>
     <div class="sim">
       <div>
-        <svg class="stage-svg" id="site" viewBox="230 170 770 405" role="img" aria-label="Animated site plan of a V4 Supercharger install"></svg>
+        <svg class="stage-svg" id="site" viewBox="262 262 738 300" role="img" aria-label="Animated site plan of a V4 Supercharger install"></svg>
         <div class="sim-controls">
           <button class="play" id="sim-play" aria-label="Play">▶</button>
           <input type="range" id="sim-range" min="0" max="1000" value="0" aria-label="Install timeline">
@@ -974,11 +979,11 @@ function drawSite(t) {
     g += `<rect x="490" y="200" width="290" height="68" fill="none" stroke="#ffcc33" stroke-width="2" stroke-dasharray="6 5" opacity="${after(t, 1) ? 1 : 0}"/>`;
     if (after(t, 1)) g += `<text x="635" y="300" text-anchor="middle" font-size="12" fill="#ffcc33">20 ft min between fuel dispensing and electrical equipment</text>`;
   } else {
-    g += `<rect x="250" y="185" width="420" height="95" rx="8" fill="#d9d4cb"/><text x="460" y="240" text-anchor="middle" font-size="20" fill="#555" font-weight="600">RESTAURANT</text>`;
-    g += `<rect x="690" y="190" width="120" height="80" rx="6" fill="#cfc8bc"/><text x="750" y="235" text-anchor="middle" font-size="12" fill="#666">patio</text>`;
+    g += `<rect x="280" y="266" width="400" height="40" rx="6" fill="#d9d4cb"/><text x="480" y="292" text-anchor="middle" font-size="20" fill="#555" font-weight="600">RESTAURANT</text>`;
+    g += `<rect x="700" y="266" width="110" height="40" rx="6" fill="#cfc8bc"/><text x="755" y="291" text-anchor="middle" font-size="12" fill="#666">patio</text>`;
   }
   // drive aisle arrows + stall row (stalls face the curb)
-  g += `<text x="500" y="345" text-anchor="middle" font-size="12" fill="#cfd3d8">DRIVE AISLE · 20 ft min</text>`;
+  g += `<text x="520" y="350" text-anchor="middle" font-size="11" fill="#cfd3d8">DRIVE AISLE · 20 ft min</text>`;
   const stallTop = 392, curbY = 460;
   for (let i = 0; i <= 13; i++) g += `<line x1="${300 + i * 36}" x2="${300 + i * 36}" y1="${stallTop}" y2="${curbY}" stroke="#f4f4f4" stroke-width="2" opacity="${i >= 0 ? 1 : 0}"/>`;
   // curb + landscape strip + equipment yard
