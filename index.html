@@ -103,7 +103,8 @@ select{font:inherit;font-size:14px;padding:8px 12px;border-radius:6px;border:1px
 .stage-svg{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line);background:#e9ecef}
 .sim-controls{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
 #sim-range{min-width:0}
-@media (max-width:620px){.voice-btn{margin-left:auto}}
+@media (max-width:620px){.voice-pick{max-width:190px;padding-right:8px}
+.voice-btn{margin-left:auto}}
 .play{width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font-size:16px;cursor:pointer;flex:none}
 #sim-range{flex:1;accent-color:var(--blue)}
 .sim-time{font-size:12px;color:var(--muted);min-width:64px;text-align:right}
@@ -268,6 +269,7 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
           <input type="range" id="sim-range" min="0" max="1000" value="0" aria-label="Install timeline">
           <span class="sim-time" id="sim-time"></span>
           <button class="voice-btn" id="sim-voice" type="button" aria-pressed="true">🔊 Voice on</button>
+          <select class="voice-btn voice-pick" id="sim-voicepick" aria-label="Foreman's voice"></select>
         </div>
         <div class="stagelist" id="sim-stages"></div>
       </div>
@@ -1137,9 +1139,35 @@ function renderSim() {
 // ---- talking foreman
 const TTS = "speechSynthesis" in window;
 let voiceOn = store.get("voice", true) && TTS, spokenStage = -1, speaking = false, talkTimer = 0;
+// Rank voices so the foreman sounds as human as the device allows: neural/"Natural" (Edge), Enhanced/Premium (Apple)
+// and Google voices first; the old robotic and novelty voices last.
+const NOVELTY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|kathy|princess|deranged|hysterical|fred|espeak/i;
+const MALE = /andrew|brian|guy|christopher|eric|roger|steffan|davis|tony|jason|evan|nathan|\btom\b|aaron|reed|alex|daniel|arthur|oliver|george|ryan|william|liam|james|male/i;
+function voiceScore(v) {
+  let n = 0;
+  if (/natural|neural|online/i.test(v.name)) n += 60;
+  if (/enhanced|premium/i.test(v.name)) n += 50;
+  if (/^google/i.test(v.name)) n += 30;
+  if (/en[-_]US/i.test(v.lang)) n += 15; else if (/en[-_](GB|AU|CA|IE)/i.test(v.lang)) n += 8;
+  if (MALE.test(v.name)) n += 12;
+  if (/desktop/i.test(v.name)) n -= 10;
+  if (NOVELTY.test(v.name)) n -= 100;
+  return n;
+}
+function englishVoices() { return TTS ? speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang)).sort((a, b) => voiceScore(b) - voiceScore(a)) : []; }
 function pickVoice() {
-  const vs = TTS ? speechSynthesis.getVoices().filter((v) => /^en/i.test(v.lang)) : [];
-  return vs.find((v) => /david|guy|daniel|mark|alex|fred|male|george|ryan|aaron/i.test(v.name)) || vs.find((v) => /en-US/i.test(v.lang)) || vs[0] || null;
+  const vs = englishVoices();
+  const chosen = store.get("voiceName", "");
+  return vs.find((v) => v.name === chosen) || vs[0] || null;
+}
+const voiceLabel = (n) => n.replace(/^Microsoft /, "").replace(/ Online \(Natural\)/, " (natural)").replace(/ - English.*$/, "");
+function fillVoicePicker() {
+  const sel = $("#sim-voicepick"); if (!sel) return;
+  const vs = englishVoices().filter((v) => !NOVELTY.test(v.name));
+  sel.hidden = !TTS || vs.length < 2;
+  const cur = pickVoice();
+  sel.innerHTML = "";
+  for (const v of vs) { const o = document.createElement("option"); o.value = v.name; o.textContent = voiceLabel(v.name); o.selected = !!cur && v.name === cur.name; sel.appendChild(o); }
 }
 function setTalking(on) { $("#foreman").classList.toggle("talking", on); }
 function say(stage, aloud) {
@@ -1155,15 +1183,24 @@ function say(stage, aloud) {
     talkTimer = setTimeout(() => { speaking = false; }, Math.max(4000, line.length * 65));
     return;
   }
-  const u = new SpeechSynthesisUtterance(line);
-  const v = pickVoice(); if (v) u.voice = v;
-  u.rate = 1.02; u.pitch = 0.95;
+  // One sentence at a time: real pauses between sentences sound far less robotic than one long utterance.
+  const v = pickVoice();
+  const natural = !!v && voiceScore(v) >= 45;
+  const parts = line.match(/[^.!?]+[.!?]+\s*|[^.!?]+$/g) || [line];
   speaking = true; setTalking(true);
-  u.onend = u.onerror = () => { speaking = false; setTalking(false); };
-  speechSynthesis.speak(u);
+  parts.forEach((text, i) => {
+    const u = new SpeechSynthesisUtterance(text.trim());
+    if (v) { u.voice = v; u.lang = v.lang; }
+    u.rate = natural ? 1.0 : 0.96;
+    u.pitch = 1.0;
+    if (i === parts.length - 1) u.onend = () => { speaking = false; setTalking(false); };
+    u.onerror = (e) => { if (e.error !== "interrupted" && e.error !== "canceled") { speaking = false; setTalking(false); } };
+    speechSynthesis.speak(u);
+  });
 }
 function stopTalking() { if (TTS) speechSynthesis.cancel(); clearTimeout(talkTimer); speaking = false; setTalking(false); }
-if (TTS) speechSynthesis.onvoiceschanged = () => {};
+if (TTS) { speechSynthesis.onvoiceschanged = fillVoicePicker; fillVoicePicker(); }
+$("#sim-voicepick").onchange = (e) => { store.set("voiceName", e.target.value); if (voiceOn) say(stageAt(SIM.t), true); };
 function syncVoiceBtn() { $("#sim-voice").textContent = voiceOn ? "🔊 Voice on" : "🔇 Voice off"; $("#sim-voice").setAttribute("aria-pressed", String(voiceOn)); if (!TTS) $("#sim-voice").hidden = true; }
 $("#sim-voice").onclick = () => { voiceOn = !voiceOn; store.set("voice", voiceOn); syncVoiceBtn(); if (SIM.playing) say(stageAt(SIM.t), true); else stopTalking(); };
 syncVoiceBtn();
