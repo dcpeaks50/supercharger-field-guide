@@ -18,6 +18,8 @@ header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 8
 nav{display:flex;gap:4px}
 nav button,.pill{border:0;background:transparent;color:var(--ink);font:inherit;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer}
 nav button:hover,nav button[aria-current="true"]{background:var(--soft)}
+nav a.evitp-link{display:inline-flex;align-items:center;margin-left:6px;padding:6px 14px;border-radius:6px;background:var(--blue);color:#fff;font-weight:600;text-decoration:none}
+nav a.evitp-link:hover{opacity:.9}
 .levels{display:flex;background:var(--soft);border-radius:8px;padding:3px}
 .levels button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:500;padding:5px 12px;border-radius:6px;cursor:pointer}
 .levels button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
@@ -154,6 +156,7 @@ footer{max-width:1120px;margin:auto;padding:24px 20px 40px;border-top:1px solid 
       <button data-view="quiz">Quiz</button>
       <button data-view="install">Install</button>
       <button data-view="ask">Ask</button>
+      <a class="evitp-link" href="evitp.html">EVITP</a>
     </nav>
     <div class="levels" role="group" aria-label="Difficulty">
       <button data-level="1" aria-pressed="true">Basics</button>
